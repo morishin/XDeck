@@ -1,0 +1,393 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 56;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		5B0DC3542A8FC79400268684 /* WebViewConfigurations.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B0DC3532A8FC79400268684 /* WebViewConfigurations.swift */; };
+		5B1CC26B2A95026F00DF7D83 /* GitHubIcon.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B1CC26A2A95026F00DF7D83 /* GitHubIcon.swift */; };
+		5B1CC26F2A95944A00DF7D83 /* AppearanceToggle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B1CC26E2A95944A00DF7D83 /* AppearanceToggle.swift */; };
+		5B1CC2712A95968E00DF7D83 /* SunIcon.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B1CC2702A95968E00DF7D83 /* SunIcon.swift */; };
+		5B1CC2732A95969600DF7D83 /* MoonIcon.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B1CC2722A95969600DF7D83 /* MoonIcon.swift */; };
+		5B5685392A92FF2900298476 /* WebViewMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B5685382A92FF2900298476 /* WebViewMessage.swift */; };
+		5B56853B2A93058500298476 /* Color+Hex.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B56853A2A93058500298476 /* Color+Hex.swift */; };
+		5B90B8C32A8E6D7300185EAA /* XDeckApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B90B8C22A8E6D7300185EAA /* XDeckApp.swift */; };
+		5B90B8C52A8E6D7300185EAA /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B90B8C42A8E6D7300185EAA /* ContentView.swift */; };
+		5B90B8C72A8E6D7400185EAA /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 5B90B8C62A8E6D7400185EAA /* Assets.xcassets */; };
+		5B90B8CA2A8E6D7400185EAA /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 5B90B8C92A8E6D7400185EAA /* Preview Assets.xcassets */; };
+		5B90B8D22A8E6E6400185EAA /* WebView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B90B8D12A8E6E6400185EAA /* WebView.swift */; };
+		5B90B8D52A8E7A2F00185EAA /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B90B8D42A8E7A2F00185EAA /* LoginView.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		5B0DC3532A8FC79400268684 /* WebViewConfigurations.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebViewConfigurations.swift; sourceTree = "<group>"; };
+		5B1CC26A2A95026F00DF7D83 /* GitHubIcon.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GitHubIcon.swift; sourceTree = "<group>"; };
+		5B1CC26E2A95944A00DF7D83 /* AppearanceToggle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppearanceToggle.swift; sourceTree = "<group>"; };
+		5B1CC2702A95968E00DF7D83 /* SunIcon.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SunIcon.swift; sourceTree = "<group>"; };
+		5B1CC2722A95969600DF7D83 /* MoonIcon.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MoonIcon.swift; sourceTree = "<group>"; };
+		5B5685382A92FF2900298476 /* WebViewMessage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebViewMessage.swift; sourceTree = "<group>"; };
+		5B56853A2A93058500298476 /* Color+Hex.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Color+Hex.swift"; sourceTree = "<group>"; };
+		5B90B8BF2A8E6D7300185EAA /* XDeck.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = XDeck.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		5B90B8C22A8E6D7300185EAA /* XDeckApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = XDeckApp.swift; sourceTree = "<group>"; };
+		5B90B8C42A8E6D7300185EAA /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		5B90B8C62A8E6D7400185EAA /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		5B90B8C92A8E6D7400185EAA /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
+		5B90B8CB2A8E6D7400185EAA /* XDeck.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = XDeck.entitlements; sourceTree = "<group>"; };
+		5B90B8D12A8E6E6400185EAA /* WebView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebView.swift; sourceTree = "<group>"; };
+		5B90B8D42A8E7A2F00185EAA /* LoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		5B90B8BC2A8E6D7300185EAA /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		5B1CC26C2A95051600DF7D83 /* View */ = {
+			isa = PBXGroup;
+			children = (
+				5B90B8C42A8E6D7300185EAA /* ContentView.swift */,
+				5B1CC26E2A95944A00DF7D83 /* AppearanceToggle.swift */,
+				5B1CC2702A95968E00DF7D83 /* SunIcon.swift */,
+				5B1CC2722A95969600DF7D83 /* MoonIcon.swift */,
+				5B1CC26A2A95026F00DF7D83 /* GitHubIcon.swift */,
+				5B90B8D42A8E7A2F00185EAA /* LoginView.swift */,
+				5B90B8D12A8E6E6400185EAA /* WebView.swift */,
+			);
+			path = View;
+			sourceTree = "<group>";
+		};
+		5B90B8B62A8E6D7300185EAA = {
+			isa = PBXGroup;
+			children = (
+				5B90B8C12A8E6D7300185EAA /* XDeck */,
+				5B90B8C02A8E6D7300185EAA /* Products */,
+				5B90B8D32A8E6F5C00185EAA /* Frameworks */,
+			);
+			sourceTree = "<group>";
+		};
+		5B90B8C02A8E6D7300185EAA /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				5B90B8BF2A8E6D7300185EAA /* XDeck.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		5B90B8C12A8E6D7300185EAA /* XDeck */ = {
+			isa = PBXGroup;
+			children = (
+				5B90B8C22A8E6D7300185EAA /* XDeckApp.swift */,
+				5B1CC26C2A95051600DF7D83 /* View */,
+				5B0DC3532A8FC79400268684 /* WebViewConfigurations.swift */,
+				5B5685382A92FF2900298476 /* WebViewMessage.swift */,
+				5B56853A2A93058500298476 /* Color+Hex.swift */,
+				5B90B8C62A8E6D7400185EAA /* Assets.xcassets */,
+				5B90B8CB2A8E6D7400185EAA /* XDeck.entitlements */,
+				5B90B8C82A8E6D7400185EAA /* Preview Content */,
+			);
+			path = XDeck;
+			sourceTree = "<group>";
+		};
+		5B90B8C82A8E6D7400185EAA /* Preview Content */ = {
+			isa = PBXGroup;
+			children = (
+				5B90B8C92A8E6D7400185EAA /* Preview Assets.xcassets */,
+			);
+			path = "Preview Content";
+			sourceTree = "<group>";
+		};
+		5B90B8D32A8E6F5C00185EAA /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		5B90B8BE2A8E6D7300185EAA /* XDeck */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 5B90B8CE2A8E6D7400185EAA /* Build configuration list for PBXNativeTarget "XDeck" */;
+			buildPhases = (
+				5B90B8BB2A8E6D7300185EAA /* Sources */,
+				5B90B8BC2A8E6D7300185EAA /* Frameworks */,
+				5B90B8BD2A8E6D7300185EAA /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = XDeck;
+			productName = XDeck;
+			productReference = 5B90B8BF2A8E6D7300185EAA /* XDeck.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		5B90B8B72A8E6D7300185EAA /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 1430;
+				LastUpgradeCheck = 1430;
+				TargetAttributes = {
+					5B90B8BE2A8E6D7300185EAA = {
+						CreatedOnToolsVersion = 14.3;
+					};
+				};
+			};
+			buildConfigurationList = 5B90B8BA2A8E6D7300185EAA /* Build configuration list for PBXProject "XDeck" */;
+			compatibilityVersion = "Xcode 14.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 5B90B8B62A8E6D7300185EAA;
+			productRefGroup = 5B90B8C02A8E6D7300185EAA /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				5B90B8BE2A8E6D7300185EAA /* XDeck */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		5B90B8BD2A8E6D7300185EAA /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				5B90B8CA2A8E6D7400185EAA /* Preview Assets.xcassets in Resources */,
+				5B90B8C72A8E6D7400185EAA /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		5B90B8BB2A8E6D7300185EAA /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				5B56853B2A93058500298476 /* Color+Hex.swift in Sources */,
+				5B90B8D22A8E6E6400185EAA /* WebView.swift in Sources */,
+				5B1CC26F2A95944A00DF7D83 /* AppearanceToggle.swift in Sources */,
+				5B5685392A92FF2900298476 /* WebViewMessage.swift in Sources */,
+				5B90B8C52A8E6D7300185EAA /* ContentView.swift in Sources */,
+				5B90B8D52A8E7A2F00185EAA /* LoginView.swift in Sources */,
+				5B90B8C32A8E6D7300185EAA /* XDeckApp.swift in Sources */,
+				5B1CC2732A95969600DF7D83 /* MoonIcon.swift in Sources */,
+				5B0DC3542A8FC79400268684 /* WebViewConfigurations.swift in Sources */,
+				5B1CC26B2A95026F00DF7D83 /* GitHubIcon.swift in Sources */,
+				5B1CC2712A95968E00DF7D83 /* SunIcon.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		5B90B8CC2A8E6D7400185EAA /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 13.3;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		5B90B8CD2A8E6D7400185EAA /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 13.3;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = macosx;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+			};
+			name = Release;
+		};
+		5B90B8CF2A8E6D7400185EAA /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = XDeck/XDeck.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "\"XDeck/Preview Content\"";
+				DEVELOPMENT_TEAM = 4GERXBURZN;
+				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = me.morishin.XDeck;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		5B90B8D02A8E6D7400185EAA /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = XDeck/XDeck.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "\"XDeck/Preview Content\"";
+				DEVELOPMENT_TEAM = 4GERXBURZN;
+				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = me.morishin.XDeck;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		5B90B8BA2A8E6D7300185EAA /* Build configuration list for PBXProject "XDeck" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				5B90B8CC2A8E6D7400185EAA /* Debug */,
+				5B90B8CD2A8E6D7400185EAA /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		5B90B8CE2A8E6D7400185EAA /* Build configuration list for PBXNativeTarget "XDeck" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				5B90B8CF2A8E6D7400185EAA /* Debug */,
+				5B90B8D02A8E6D7400185EAA /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 5B90B8B72A8E6D7300185EAA /* Project object */;
+}
