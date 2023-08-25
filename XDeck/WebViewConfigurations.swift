@@ -9,11 +9,11 @@ struct WebViewConfigurations {
     }
 
     static var topTabConfiguration: WKWebViewConfiguration {
-        makeConfiguration(script: wrapOnLoad(contents: [clickTopTab, findThemeColor]))
+        makeConfiguration(script: wrapOnLoad(contents: [clickTopTab, findThemeColor, hidePostArea]))
     }
 
     static var followingTabConfiguration: WKWebViewConfiguration {
-        makeConfiguration(script: wrapOnLoad(contents: [hideHeader, clickFollowingTab]))
+        makeConfiguration(script: wrapOnLoad(contents: [hideHeader, clickFollowingTab, hidePostArea]))
     }
 
     static var commmonConfiguration: WKWebViewConfiguration {
@@ -30,6 +30,13 @@ struct WebViewConfigurations {
         userContentController.addUserScript(script)
         return configuration
     }
+
+    private static let hidePostArea: String = """
+        const style = document.createElement('style');
+        style.type = 'text/css';
+        style.innerHTML = "div:has(> main):has(> :nth-child(4)) > main div:has(> div > div[role='progressbar']) { display: none; }";
+        document.querySelector('head').appendChild(style);
+    """
 
     private static let findUserName: String = """
         waitForElement("a[href$='/lists']", 0, (element) => {
@@ -48,9 +55,10 @@ struct WebViewConfigurations {
     """
 
     private static let hideHeader: String = """
-        waitForElement('header', 0, (element) => {
-            element.style.display = 'none';
-        });
+        const style = document.createElement('style');
+        style.type = 'text/css';
+        style.innerHTML = "header { display: none !important; }";
+        document.querySelector('head').appendChild(style);
         """
 
     private static let clickTopTab: String = """
@@ -69,18 +77,26 @@ struct WebViewConfigurations {
         return """
             \(waitForElement)
             document.addEventListener('DOMContentLoaded', () => {
-                \(contents.joined(separator: "\n"))
+                \(contents.map {
+                    """
+                    (() => {
+                        \($0)
+                    })();
+                    """
+                }.joined(separator: "\n"))
             });
             """
     }
 
     private static let waitForElement: String = """
-        function waitForElement(selector, index, callback) {
+        function waitForElement(selector, index, callback, once=true) {
             const observer = new MutationObserver((mutationsList, observer) => {
                 const element = document.querySelectorAll(selector)[index];
                 if (element) {
                     callback(element);
-                    observer.disconnect();
+                    if (once) {
+                        observer.disconnect();
+                    }
                 }
             });
             observer.observe(document.body, { childList: true, subtree: true });
