@@ -1,0 +1,17 @@
+{
+  "$schema": "./schema.json",
+  "columns": [
+    {
+      "type": "forYou"
+    },
+    {
+      "type": "following"
+    },
+    {
+      "type": "notifications"
+    },
+    {
+      "type": "profile"
+    }
+  ]
+}
