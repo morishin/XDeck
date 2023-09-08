@@ -112,6 +112,9 @@ struct ContentView: View {
             Button("r") {
                 refreshSwitch = !refreshSwitch
             }.keyboardShortcut("r").opacity(0)
+            Button(",") {
+                NSWorkspace.shared.open(AppConfig.configDirectoryUrl)
+            }.keyboardShortcut(",").opacity(0)
             if profileUrl != nil {
                 ScrollView(.horizontal) {
                     VStack(alignment: .leading, spacing: 0) {
@@ -145,6 +148,7 @@ struct ContentView: View {
                         Text("⌘+ Zoom In").foregroundColor(Self.textColor(for: backgroundColor))
                         Text("⌘- Zoom out").foregroundColor(Self.textColor(for: backgroundColor))
                         Text("⌘R Refresh").foregroundColor(Self.textColor(for: backgroundColor))
+                        Text("⌘, Settings").foregroundColor(Self.textColor(for: backgroundColor))
                         Spacer()
                     }
                     .foregroundColor(Self.textColor(for: backgroundColor))

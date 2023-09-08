@@ -21,7 +21,7 @@ struct AppConfig: Decodable {
         var url: String?
     }
 
-    private static let configDirectoryUrl = FileManager.default.homeDirectoryForCurrentUser.appending(components: ".config", "XDeck")
+    static let configDirectoryUrl = FileManager.default.homeDirectoryForCurrentUser.appending(components: ".config", "XDeck")
     private static let configFileUrl = configDirectoryUrl.appending(path: "settings.json")
     private static let configSchemaFileUrl = configDirectoryUrl.appending(path: "schema.json")
     private static func createConfigFileIfNotExist() throws {
