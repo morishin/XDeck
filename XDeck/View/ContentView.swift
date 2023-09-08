@@ -209,8 +209,17 @@ struct ContentView: View {
 }
 
 struct ContentView_Previews: PreviewProvider {
+    private static var defaultConfig: AppConfig {
+        return AppConfig(columns: [
+            AppConfig.Column(type: .forYou),
+            AppConfig.Column(type: .following),
+            AppConfig.Column(type: .notifications),
+            AppConfig.Column(type: .profile),
+        ])
+    }
+
     static var previews: some View {
-        ContentView(appConfig: AppConfig.defaultConfig)
+        ContentView(appConfig: defaultConfig)
             .frame(minWidth: 1280, minHeight: 900)
     }
 }
