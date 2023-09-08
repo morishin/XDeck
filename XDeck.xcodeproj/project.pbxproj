@@ -14,6 +14,7 @@
 		5B1CC2732A95969600DF7D83 /* MoonIcon.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B1CC2722A95969600DF7D83 /* MoonIcon.swift */; };
 		5B5685392A92FF2900298476 /* WebViewMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B5685382A92FF2900298476 /* WebViewMessage.swift */; };
 		5B56853B2A93058500298476 /* Color+Hex.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B56853A2A93058500298476 /* Color+Hex.swift */; };
+		5B5F42252AAA368E0031658B /* AppConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B5F42242AAA368E0031658B /* AppConfig.swift */; };
 		5B90B8C32A8E6D7300185EAA /* XDeckApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B90B8C22A8E6D7300185EAA /* XDeckApp.swift */; };
 		5B90B8C52A8E6D7300185EAA /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B90B8C42A8E6D7300185EAA /* ContentView.swift */; };
 		5B90B8C72A8E6D7400185EAA /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 5B90B8C62A8E6D7400185EAA /* Assets.xcassets */; };
@@ -30,6 +31,7 @@
 		5B1CC2722A95969600DF7D83 /* MoonIcon.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MoonIcon.swift; sourceTree = "<group>"; };
 		5B5685382A92FF2900298476 /* WebViewMessage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebViewMessage.swift; sourceTree = "<group>"; };
 		5B56853A2A93058500298476 /* Color+Hex.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Color+Hex.swift"; sourceTree = "<group>"; };
+		5B5F42242AAA368E0031658B /* AppConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppConfig.swift; sourceTree = "<group>"; };
 		5B90B8BF2A8E6D7300185EAA /* XDeck.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = XDeck.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		5B90B8C22A8E6D7300185EAA /* XDeckApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = XDeckApp.swift; sourceTree = "<group>"; };
 		5B90B8C42A8E6D7300185EAA /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -89,6 +91,7 @@
 				5B1CC26C2A95051600DF7D83 /* View */,
 				5B0DC3532A8FC79400268684 /* WebViewConfigurations.swift */,
 				5B5685382A92FF2900298476 /* WebViewMessage.swift */,
+				5B5F42242AAA368E0031658B /* AppConfig.swift */,
 				5B56853A2A93058500298476 /* Color+Hex.swift */,
 				5B90B8C62A8E6D7400185EAA /* Assets.xcassets */,
 				5B90B8CB2A8E6D7400185EAA /* XDeck.entitlements */,
@@ -191,6 +194,7 @@
 				5B90B8C32A8E6D7300185EAA /* XDeckApp.swift in Sources */,
 				5B1CC2732A95969600DF7D83 /* MoonIcon.swift in Sources */,
 				5B0DC3542A8FC79400268684 /* WebViewConfigurations.swift in Sources */,
+				5B5F42252AAA368E0031658B /* AppConfig.swift in Sources */,
 				5B1CC26B2A95026F00DF7D83 /* GitHubIcon.swift in Sources */,
 				5B1CC2712A95968E00DF7D83 /* SunIcon.swift in Sources */,
 			);

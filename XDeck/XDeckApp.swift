@@ -4,7 +4,7 @@ import SwiftUI
 struct XDeckApp: App {
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            ContentView(appConfig: AppConfig.defaultConfig)
         }.windowStyle(.hiddenTitleBar)
     }
 }

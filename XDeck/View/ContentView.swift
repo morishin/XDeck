@@ -2,6 +2,8 @@ import SwiftUI
 import WebKit
 
 struct ContentView: View {
+    var appConfig: AppConfig
+
     @AppStorage("pageZoom") var pageZoom: Double = 1
     @AppStorage("isDarkMode") var isDarkMode: Bool = false
 
@@ -44,6 +46,59 @@ struct ContentView: View {
         """
     }
 
+    @ViewBuilder
+    private func makeColumn(column: AppConfig.Column, index: Int, profileUrl: Binding<URL?>) -> some View {
+        let width = index == 0 ? columnWidth + Self.sideMenuWidth : columnWidth
+        switch column.type {
+        case .forYou:
+            WebView(
+                isLoading: $isLoading, url: $homeUrl, alertMessage: $alertMessage,
+                messageFromWebView: $topTabMessage,
+                scriptExecutionRequest: $scriptExecutionRequest,
+                refreshSwitch: refreshSwitch,
+                configuration: WebViewConfigurations.topTabConfiguration
+            ).frame(width: width)
+        case .following:
+            WebView(
+                isLoading: $isLoading, url: $homeUrl, alertMessage: $alertMessage,
+                messageFromWebView: $followingTabMessage,
+                scriptExecutionRequest: $scriptExecutionRequest,
+                refreshSwitch: refreshSwitch,
+                configuration: WebViewConfigurations.followingTabConfiguration
+            ).frame(width: width)
+        case .notifications:
+            WebView(
+                isLoading: $isLoading, url: $notificationsUrl,
+                alertMessage: $alertMessage,
+                messageFromWebView: $notificationsViewMessage,
+                scriptExecutionRequest: $scriptExecutionRequest,
+                refreshSwitch: refreshSwitch,
+                configuration: WebViewConfigurations.commmonConfiguration
+            ).frame(width: width)
+        case .profile:
+            if let url = Binding(profileUrl) {
+                WebView(
+                    isLoading: $isLoading, url: url, alertMessage: $alertMessage,
+                    messageFromWebView: $profileViewMessage,
+                    scriptExecutionRequest: $scriptExecutionRequest,
+                    refreshSwitch: refreshSwitch,
+                    configuration: WebViewConfigurations.commmonConfiguration
+                ).frame(width: width)
+            }
+        case .custom:
+            if let urlString = column.url, let url = URL(string: urlString) {
+                WebView(
+                    isLoading: $isLoading, url: .constant(url), alertMessage: $alertMessage,
+                    messageFromWebView: $profileViewMessage,
+                    scriptExecutionRequest: .constant(nil),
+                    refreshSwitch: refreshSwitch,
+                    configuration: nil
+                ).frame(width: width)
+            }
+        }
+        EmptyView()
+    }
+
     var body: some View {
         ZStack {
             Button("+") {
@@ -57,39 +112,13 @@ struct ContentView: View {
             Button("r") {
                 refreshSwitch = !refreshSwitch
             }.keyboardShortcut("r").opacity(0)
-            if let url = Binding($profileUrl) {
+            if profileUrl != nil {
                 ScrollView(.horizontal) {
                     VStack(alignment: .leading, spacing: 0) {
                         HStack(spacing: 0) {
-                            WebView(
-                                isLoading: $isLoading, url: $homeUrl, alertMessage: $alertMessage,
-                                messageFromWebView: $topTabMessage,
-                                scriptExecutionRequest: $scriptExecutionRequest,
-                                refreshSwitch: refreshSwitch,
-                                configuration: WebViewConfigurations.topTabConfiguration
-                            ).frame(width: columnWidth + Self.sideMenuWidth)
-                            WebView(
-                                isLoading: $isLoading, url: $homeUrl, alertMessage: $alertMessage,
-                                messageFromWebView: $followingTabMessage,
-                                scriptExecutionRequest: $scriptExecutionRequest,
-                                refreshSwitch: refreshSwitch,
-                                configuration: WebViewConfigurations.followingTabConfiguration
-                            ).frame(width: columnWidth)
-                            WebView(
-                                isLoading: $isLoading, url: $notificationsUrl,
-                                alertMessage: $alertMessage,
-                                messageFromWebView: $notificationsViewMessage,
-                                scriptExecutionRequest: $scriptExecutionRequest,
-                                refreshSwitch: refreshSwitch,
-                                configuration: WebViewConfigurations.commmonConfiguration
-                            ).frame(width: columnWidth)
-                            WebView(
-                                isLoading: $isLoading, url: url, alertMessage: $alertMessage,
-                                messageFromWebView: $profileViewMessage,
-                                scriptExecutionRequest: $scriptExecutionRequest,
-                                refreshSwitch: refreshSwitch,
-                                configuration: WebViewConfigurations.commmonConfiguration
-                            ).frame(width: columnWidth)
+                            ForEach(appConfig.columns.indices, id: \.hashValue) { index in
+                                makeColumn(column: appConfig.columns[index], index: index, profileUrl: $profileUrl)
+                            }
                             Spacer()
                         }
                     }
@@ -181,7 +210,7 @@ struct ContentView: View {
 
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
-        ContentView()
+        ContentView(appConfig: AppConfig.defaultConfig)
             .frame(minWidth: 1280, minHeight: 900)
     }
 }

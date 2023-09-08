@@ -31,8 +31,9 @@ struct WebView: NSViewRepresentable {
     }
 
     func updateNSView(_ webView: WKWebView, context: Context) {
-        if let url = webView.url, url != context.coordinator.initialUrl {
+        if let url = webView.url, url != context.coordinator.lastUrl {
             let request = URLRequest(url: url)
+            context.coordinator.lastUrl = url
             webView.load(request)
         }
         if refreshSwitch != context.coordinator.refreshSwitch {
@@ -57,12 +58,12 @@ struct WebView: NSViewRepresentable {
 
 class Coordinator: NSObject, WKNavigationDelegate, WKUIDelegate, WKScriptMessageHandler {
     private let owner: WebView
-    var initialUrl: URL
+    var lastUrl: URL
     var refreshSwitch: Bool
 
     init(owner: WebView) {
         self.owner = owner
-        self.initialUrl = owner.url
+        self.lastUrl = owner.url
         self.refreshSwitch = false
         super.init()
         owner.configuration?.userContentController.add(self, name: WebViewConfigurations.handlerName)
