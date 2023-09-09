@@ -14,6 +14,7 @@ struct ContentView: View {
     @State var columnWidth: CGFloat = 380
     @State var refreshSwitch: Bool = false
     @State var scriptExecutionRequest: String? = nil
+    @State var isShowConfirmOpenPreference: Bool = false
 
     @State var topTabMessage: String? = nil
     @State var followingTabMessage: String? = nil
@@ -28,7 +29,7 @@ struct ContentView: View {
     @Environment(\.openURL) private var openURL
 
     private static let defaultColumnWidth: CGFloat = 380
-    private static let sideMenuWidth: CGFloat = 68
+    private static let sideHeaderWidth: CGFloat = 68
     private static let numberOfColumns = 4
     private static func defaultBackgroundColor(isDarkMode: Bool) -> Color {
         isDarkMode ? Color(hex: "#17202A") : Color(hex: "#FFFFFF")
@@ -41,14 +42,23 @@ struct ContentView: View {
     }
     private static func setNightModeCookieScript(isDarkMode: Bool) -> String {
         return """
-            document.cookie = "night_mode=\(isDarkMode ? 1 : 0); domain=.twitter.com; path=/";
-            location.reload();
-        """
+                document.cookie = "night_mode=\(isDarkMode ? 1 : 0); domain=.twitter.com; path=/";
+                location.reload();
+            """
     }
 
     @ViewBuilder
-    private func makeColumn(column: AppConfig.Column, index: Int, profileUrl: Binding<URL?>) -> some View {
-        let width = index == 0 ? columnWidth + Self.sideMenuWidth : columnWidth
+    private func makeColumn(
+        column: AppConfig.Column, isLeftMostXColumn: Bool, profileUrl: Binding<URL?>
+    )
+        -> some View
+    {
+        let width = isLeftMostXColumn ? columnWidth + Self.sideHeaderWidth : columnWidth
+
+        let baseConfiguration: [WebViewConfigurations.OnLoadScript] =
+            isLeftMostXColumn
+            ? [.findThemeColor] : column.isXColumn ? [.hideSideHeader, .hidePostArea] : []
+
         switch column.type {
         case .forYou:
             WebView(
@@ -56,7 +66,8 @@ struct ContentView: View {
                 messageFromWebView: $topTabMessage,
                 scriptExecutionRequest: $scriptExecutionRequest,
                 refreshSwitch: refreshSwitch,
-                configuration: WebViewConfigurations.topTabConfiguration
+                configuration: WebViewConfigurations.makeConfiguration(
+                    onLoadScripts: baseConfiguration + [.clickForYouTab])
             ).frame(width: width)
         case .following:
             WebView(
@@ -64,7 +75,8 @@ struct ContentView: View {
                 messageFromWebView: $followingTabMessage,
                 scriptExecutionRequest: $scriptExecutionRequest,
                 refreshSwitch: refreshSwitch,
-                configuration: WebViewConfigurations.followingTabConfiguration
+                configuration: WebViewConfigurations.makeConfiguration(
+                    onLoadScripts: baseConfiguration + [.clickFollowingTab])
             ).frame(width: width)
         case .notifications:
             WebView(
@@ -73,7 +85,8 @@ struct ContentView: View {
                 messageFromWebView: $notificationsViewMessage,
                 scriptExecutionRequest: $scriptExecutionRequest,
                 refreshSwitch: refreshSwitch,
-                configuration: WebViewConfigurations.commmonConfiguration
+                configuration: WebViewConfigurations.makeConfiguration(
+                    onLoadScripts: baseConfiguration)
             ).frame(width: width)
         case .profile:
             if let url = Binding(profileUrl) {
@@ -82,7 +95,8 @@ struct ContentView: View {
                     messageFromWebView: $profileViewMessage,
                     scriptExecutionRequest: $scriptExecutionRequest,
                     refreshSwitch: refreshSwitch,
-                    configuration: WebViewConfigurations.commmonConfiguration
+                    configuration: WebViewConfigurations.makeConfiguration(
+                        onLoadScripts: baseConfiguration)
                 ).frame(width: width)
             }
         case .custom:
@@ -99,6 +113,10 @@ struct ContentView: View {
         EmptyView()
     }
 
+    lazy var leftMostXColumnIndex: Int? = {
+        return appConfig.columns.firstIndex { $0.isXColumn }
+    }()
+
     var body: some View {
         ZStack {
             Button("+") {
@@ -113,14 +131,18 @@ struct ContentView: View {
                 refreshSwitch = !refreshSwitch
             }.keyboardShortcut("r").opacity(0)
             Button(",") {
-                NSWorkspace.shared.open(AppConfig.configDirectoryUrl)
+                isShowConfirmOpenPreference = true
             }.keyboardShortcut(",").opacity(0)
             if profileUrl != nil {
                 ScrollView(.horizontal) {
                     VStack(alignment: .leading, spacing: 0) {
                         HStack(spacing: 0) {
                             ForEach(appConfig.columns.indices, id: \.hashValue) { index in
-                                makeColumn(column: appConfig.columns[index], index: index, profileUrl: $profileUrl)
+                                let isLeftMostXColumn = index == (appConfig.columns.firstIndex { $0.isXColumn } ?? -1)
+                                makeColumn(
+                                    column: appConfig.columns[index],
+                                    isLeftMostXColumn: isLeftMostXColumn,
+                                    profileUrl: $profileUrl)
                             }
                             Spacer()
                         }
@@ -142,8 +164,10 @@ struct ContentView: View {
                         AppearanceToggle(isOn: $isDarkMode) {}.onChange(
                             of: isDarkMode,
                             perform: { newValue in
-                                scriptExecutionRequest = Self.setNightModeCookieScript(isDarkMode: isDarkMode)
-                                backgroundColor = Self.defaultBackgroundColor(isDarkMode: isDarkMode)
+                                scriptExecutionRequest = Self.setNightModeCookieScript(
+                                    isDarkMode: isDarkMode)
+                                backgroundColor = Self.defaultBackgroundColor(
+                                    isDarkMode: isDarkMode)
                             })
                         Text("⌘+ Zoom In").foregroundColor(Self.textColor(for: backgroundColor))
                         Text("⌘- Zoom out").foregroundColor(Self.textColor(for: backgroundColor))
@@ -208,6 +232,19 @@ struct ContentView: View {
         }
         .alert(isPresented: $isShowingAlert) {
             Alert(title: Text(alertMessage ?? ""))
+        }
+        .alert(isPresented: $isShowConfirmOpenPreference) {
+            Alert(
+                title: Text("Do you open settings folder?"),
+                message: Text("Please edit settings.json and restart app."),
+                primaryButton: .default(
+                    Text("Open Folder"),
+                    action: {
+                        NSWorkspace.shared.open(AppConfig.configDirectoryUrl)
+                        isShowConfirmOpenPreference = false
+                    }),
+                secondaryButton: .cancel(
+                    Text("Cancel"), action: { isShowConfirmOpenPreference = false }))
         }
     }
 }

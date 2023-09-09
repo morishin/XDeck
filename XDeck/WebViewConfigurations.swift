@@ -2,32 +2,37 @@ import Foundation
 import WebKit
 
 struct WebViewConfigurations {
+    enum OnLoadScript {
+        case findUserName
+        case findThemeColor
+        case clickForYouTab
+        case hidePostArea
+        case clickFollowingTab
+        case hideSideHeader
+
+        var scriptContent: String {
+            switch self {
+            case .findUserName: return WebViewConfigurations.findUserName
+            case .findThemeColor: return WebViewConfigurations.findThemeColor
+            case .clickForYouTab: return WebViewConfigurations.clickForYouTab
+            case .hidePostArea: return WebViewConfigurations.hidePostArea
+            case .clickFollowingTab: return WebViewConfigurations.clickFollowingTab
+            case .hideSideHeader: return WebViewConfigurations.hideSideHeader
+            }
+        }
+    }
+
     static let handlerName = "handler";
 
-    static var loginConfiguration: WKWebViewConfiguration {
-        makeConfiguration(script: wrapOnLoad(contents: [findUserName, findThemeColor]))
-    }
-
-    static var topTabConfiguration: WKWebViewConfiguration {
-        makeConfiguration(script: wrapOnLoad(contents: [clickTopTab, findThemeColor, hidePostArea]))
-    }
-
-    static var followingTabConfiguration: WKWebViewConfiguration {
-        makeConfiguration(script: wrapOnLoad(contents: [hideHeader, clickFollowingTab, hidePostArea]))
-    }
-
-    static var commmonConfiguration: WKWebViewConfiguration {
-        makeConfiguration(script: wrapOnLoad(contents: [hideHeader]))
-    }
-
-    private static func makeConfiguration(script: String) -> WKWebViewConfiguration {
+    static func makeConfiguration(onLoadScripts: [OnLoadScript]) -> WKWebViewConfiguration {
+        let script = wrapOnLoad(contents: onLoadScripts.map(\.scriptContent))
         let configuration = WKWebViewConfiguration()
         let userContentController = WKUserContentController()
         configuration.userContentController = userContentController
-        let script = WKUserScript(
+        let userScript = WKUserScript(
             source: script,
             injectionTime: .atDocumentStart, forMainFrameOnly: true)
-        userContentController.addUserScript(script)
+        userContentController.addUserScript(userScript)
         return configuration
     }
 
@@ -54,14 +59,14 @@ struct WebViewConfigurations {
         });
     """
 
-    private static let hideHeader: String = """
+    private static let hideSideHeader: String = """
         const style = document.createElement('style');
         style.type = 'text/css';
         style.innerHTML = "header { display: none !important; }";
         document.querySelector('head').appendChild(style);
         """
 
-    private static let clickTopTab: String = """
+    private static let clickForYouTab: String = """
         waitForElement("a[href='/home'][role='tab']", 0, (element) => {
             element.click();
         });

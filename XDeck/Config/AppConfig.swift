@@ -19,6 +19,18 @@ struct AppConfig: Decodable {
 
         var type: ColumnType
         var url: String?
+
+        var isXColumn: Bool {
+            switch type {
+            case .following, .forYou, .notifications, .profile:
+                return true
+            case .custom:
+                if let url = url.flatMap({ URL(string: $0)}), ["x.com", "twitter.com"].contains(url.host()) {
+                    return true
+                }
+                return false
+            }
+        }
     }
 
     static let configDirectoryUrl = FileManager.default.homeDirectoryForCurrentUser.appending(components: ".config", "XDeck")
