@@ -60,11 +60,9 @@
 		5B1CC26C2A95051600DF7D83 /* View */ = {
 			isa = PBXGroup;
 			children = (
+				5B66C9672AE7FBF400D51830 /* Icon */,
 				5B90B8C42A8E6D7300185EAA /* ContentView.swift */,
 				5B1CC26E2A95944A00DF7D83 /* AppearanceToggle.swift */,
-				5B1CC2702A95968E00DF7D83 /* SunIcon.swift */,
-				5B1CC2722A95969600DF7D83 /* MoonIcon.swift */,
-				5B1CC26A2A95026F00DF7D83 /* GitHubIcon.swift */,
 				5B90B8D42A8E7A2F00185EAA /* LoginView.swift */,
 				5B90B8D12A8E6E6400185EAA /* WebView.swift */,
 			);
@@ -79,6 +77,16 @@
 				5B5F42292AAAB0870031658B /* schema.json */,
 			);
 			path = Config;
+			sourceTree = "<group>";
+		};
+		5B66C9672AE7FBF400D51830 /* Icon */ = {
+			isa = PBXGroup;
+			children = (
+				5B1CC26A2A95026F00DF7D83 /* GitHubIcon.swift */,
+				5B1CC2722A95969600DF7D83 /* MoonIcon.swift */,
+				5B1CC2702A95968E00DF7D83 /* SunIcon.swift */,
+			);
+			path = Icon;
 			sourceTree = "<group>";
 		};
 		5B90B8B62A8E6D7300185EAA = {
