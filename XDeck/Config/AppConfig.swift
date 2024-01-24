@@ -6,6 +6,7 @@ enum AppConfigError: Error {
 }
 
 struct AppConfig: Decodable {
+    var columnWidth: Int?
     var columns: [Column]
 
     struct Column: Decodable {

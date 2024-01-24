@@ -1,5 +1,6 @@
 {
   "$schema": "./schema.json",
+  "columnWidth": 380,
   "columns": [
     {
       "type": "forYou"
