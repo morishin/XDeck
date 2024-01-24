@@ -5,6 +5,9 @@
     "$schema": {
       "type": "string"
     },
+    "columnWidth": {
+      "type": "integer"
+    },
     "columns": {
       "type": "array",
       "items": {

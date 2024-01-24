@@ -11,7 +11,7 @@ struct ContentView: View {
     @State var isShowingAlert: Bool = false
     @State var alertMessage: String? = nil
     @State var backgroundColor: Color = .white
-    @State var columnWidth: CGFloat = 380
+    @State var columnWidth: CGFloat
     @State var refreshSwitch: Bool = false
     @State var scriptExecutionRequest: String? = nil
     @State var isShowConfirmOpenPreference: Bool = false
@@ -45,6 +45,11 @@ struct ContentView: View {
                 document.cookie = "night_mode=\(isDarkMode ? 1 : 0); domain=.twitter.com; path=/";
                 location.reload();
             """
+    }
+
+    init(appConfig: AppConfig) {
+        self.appConfig = appConfig
+        self._columnWidth = State<CGFloat>(initialValue: appConfig.columnWidth.map(CGFloat.init) ?? Self.defaultColumnWidth)
     }
 
     @ViewBuilder
@@ -121,11 +126,11 @@ struct ContentView: View {
         ZStack {
             Button("+") {
                 pageZoom = pageZoom + 0.2
-                columnWidth = Self.defaultColumnWidth * pageZoom
+                columnWidth = (appConfig.columnWidth.map(CGFloat.init) ?? Self.defaultColumnWidth) * pageZoom
             }.keyboardShortcut("+").opacity(0)
             Button("-") {
                 pageZoom = pageZoom - 0.2
-                columnWidth = Self.defaultColumnWidth * pageZoom
+                columnWidth = (appConfig.columnWidth.map(CGFloat.init) ?? Self.defaultColumnWidth) * pageZoom
             }.keyboardShortcut("-").opacity(0)
             Button("r") {
                 refreshSwitch = !refreshSwitch
