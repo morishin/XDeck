@@ -98,7 +98,7 @@ struct ContentView: View {
                 WebView(
                     isLoading: $isLoading, url: url, alertMessage: $alertMessage,
                     messageFromWebView: $profileViewMessage,
-                    scriptExecutionRequest: $scriptExecutionRequest,
+                    scriptExecutionRequest: column.isXColumn ? $scriptExecutionRequest : .constant(nil),
                     refreshSwitch: refreshSwitch,
                     configuration: WebViewConfigurations.makeConfiguration(
                         onLoadScripts: baseConfiguration)
@@ -109,9 +109,10 @@ struct ContentView: View {
                 WebView(
                     isLoading: $isLoading, url: .constant(url), alertMessage: $alertMessage,
                     messageFromWebView: $profileViewMessage,
-                    scriptExecutionRequest: .constant(nil),
+                    scriptExecutionRequest: $scriptExecutionRequest,
                     refreshSwitch: refreshSwitch,
-                    configuration: nil
+                    configuration: WebViewConfigurations.makeConfiguration(
+                        onLoadScripts: baseConfiguration)
                 ).frame(width: width)
             }
         }
