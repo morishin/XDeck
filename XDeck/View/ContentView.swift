@@ -22,8 +22,8 @@ struct ContentView: View {
     @State var profileViewMessage: String? = nil
     @State var loginViewMessage: String? = nil
 
-    @State var homeUrl: URL = URL(string: "https://twitter.com/home")!
-    @State var notificationsUrl: URL = URL(string: "https://twitter.com/notifications")!
+    @State var homeUrl: URL = URL(string: "https://x.com/home")!
+    @State var notificationsUrl: URL = URL(string: "https://x.com/notifications")!
     @State var profileUrl: URL? = nil
 
     @Environment(\.openURL) private var openURL
@@ -42,7 +42,7 @@ struct ContentView: View {
     }
     private static func setNightModeCookieScript(isDarkMode: Bool) -> String {
         return """
-                document.cookie = "night_mode=\(isDarkMode ? 1 : 0); domain=.twitter.com; path=/";
+                document.cookie = "night_mode=\(isDarkMode ? 1 : 0); domain=.x.com; path=/";
                 location.reload();
             """
     }
@@ -207,7 +207,7 @@ struct ContentView: View {
                 {
                     switch message.type {
                     case .userName:
-                        if let url = URL(string: "https://twitter.com/\(message.body)") {
+                        if let url = URL(string: "https://x.com/\(message.body)") {
                             profileUrl = url
                         }
                     case .themeColor:

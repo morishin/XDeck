@@ -45,7 +45,7 @@ struct WebViewConfigurations {
 
     private static let findUserName: String = """
         waitForElement("a[href$='/lists']", 0, (element) => {
-            const userName = element.href.match(/twitter.com\\/(?<userName>.+)\\/lists/).groups.userName;
+            const userName = element.href.match(/x.com\\/(?<userName>.+)\\/lists/).groups.userName;
             const message = JSON.stringify({ type: "userName", body: userName });
             webkit.messageHandlers.\(Self.handlerName).postMessage(message);
         });
