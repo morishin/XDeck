@@ -47,7 +47,8 @@ struct ContentView: View {
 
     init(appConfig: AppConfig) {
         self.appConfig = appConfig
-        self._columnWidth = State<CGFloat>(initialValue: appConfig.columnWidth.map(CGFloat.init) ?? Self.defaultColumnWidth)
+        self._columnWidth = State<CGFloat>(
+            initialValue: appConfig.columnWidth.map(CGFloat.init) ?? Self.defaultColumnWidth)
     }
 
     @ViewBuilder
@@ -105,7 +106,8 @@ struct ContentView: View {
                 WebView(
                     isLoading: $isLoading, url: url, alertMessage: $alertMessage,
                     messageFromWebView: $webViewMessage,
-                    scriptExecutionRequest: column.isXColumn ? $scriptExecutionRequest : .constant(nil),
+                    scriptExecutionRequest: column.isXColumn
+                        ? $scriptExecutionRequest : .constant(nil),
                     refreshSwitch: refreshSwitch,
                     configuration: WebViewConfigurations.makeConfiguration(
                         onLoadScripts: baseConfiguration)
@@ -134,11 +136,13 @@ struct ContentView: View {
         ZStack {
             Button("+") {
                 pageZoom = pageZoom + 0.2
-                columnWidth = (appConfig.columnWidth.map(CGFloat.init) ?? Self.defaultColumnWidth) * pageZoom
+                columnWidth =
+                    (appConfig.columnWidth.map(CGFloat.init) ?? Self.defaultColumnWidth) * pageZoom
             }.keyboardShortcut("+").opacity(0)
             Button("-") {
                 pageZoom = pageZoom - 0.2
-                columnWidth = (appConfig.columnWidth.map(CGFloat.init) ?? Self.defaultColumnWidth) * pageZoom
+                columnWidth =
+                    (appConfig.columnWidth.map(CGFloat.init) ?? Self.defaultColumnWidth) * pageZoom
             }.keyboardShortcut("-").opacity(0)
             Button("r") {
                 refreshSwitch = !refreshSwitch
@@ -166,7 +170,8 @@ struct ContentView: View {
                     VStack(alignment: .leading, spacing: 0) {
                         HStack(spacing: 0) {
                             ForEach(appConfig.columns.indices, id: \.hashValue) { index in
-                                let isLeftMostXColumn = index == (appConfig.columns.firstIndex { $0.isXColumn } ?? -1)
+                                let isLeftMostXColumn =
+                                    index == (appConfig.columns.firstIndex { $0.isXColumn } ?? -1)
                                 makeColumn(
                                     column: appConfig.columns[index],
                                     isLeftMostXColumn: isLeftMostXColumn,
@@ -208,6 +213,24 @@ struct ContentView: View {
                                     scriptExecutionRequest = WebViewConfigurations.showAds
                                 }
                             })
+                        Button {
+                            openURL(URL(string: "https://github.com/sponsors/morishin")!)
+                        } label: {
+                            Label {
+                                Text("Sponsor")
+                                    .foregroundStyle(isDarkMode ? Color.white : Self.textColor(for: backgroundColor))
+                            } icon: {
+                                GitHubSponsorIcon()
+                                    .foregroundColor(Color(hex: "#BF3989")).frame(
+                                        width: 16, height: 16)
+                            }
+                        }.buttonStyle(.bordered).onHover { inside in
+                            if inside {
+                                NSCursor.pointingHand.push()
+                            } else {
+                                NSCursor.pop()
+                            }
+                        }
                         Text("⌘+ Zoom In").foregroundColor(Self.textColor(for: backgroundColor))
                         Text("⌘- Zoom out").foregroundColor(Self.textColor(for: backgroundColor))
                         Text("⌘R Refresh").foregroundColor(Self.textColor(for: backgroundColor))
