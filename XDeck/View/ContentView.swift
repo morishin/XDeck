@@ -6,6 +6,7 @@ struct ContentView: View {
 
     @AppStorage("pageZoom") var pageZoom: Double = 1
     @AppStorage("isDarkMode") var isDarkMode: Bool = false
+    @AppStorage("hideAds") var hideAds: Bool = false
 
     @State var isLoading: Bool = false
     @State var isShowingAlert: Bool = false
@@ -16,10 +17,7 @@ struct ContentView: View {
     @State var scriptExecutionRequest: String? = nil
     @State var isShowConfirmOpenPreference: Bool = false
 
-    @State var topTabMessage: String? = nil
-    @State var followingTabMessage: String? = nil
-    @State var notificationsViewMessage: String? = nil
-    @State var profileViewMessage: String? = nil
+    @State var webViewMessage: String? = nil
     @State var loginViewMessage: String? = nil
 
     @State var homeUrl: URL = URL(string: "https://x.com/home")!
@@ -60,15 +58,24 @@ struct ContentView: View {
     {
         let width = isLeftMostXColumn ? columnWidth + Self.sideHeaderWidth : columnWidth
 
-        let baseConfiguration: [WebViewConfigurations.OnLoadScript] =
-            isLeftMostXColumn
-            ? [.findThemeColor] : column.isXColumn ? [.hideSideHeader, .hidePostArea] : []
+        let baseConfiguration: [WebViewConfigurations.OnLoadScript] = {
+            var scripts: [WebViewConfigurations.OnLoadScript] = [.global]
+            if isLeftMostXColumn {
+                scripts.append(.findThemeColor)
+            } else if column.isXColumn {
+                scripts.append(contentsOf: [.hideSideHeader, .hidePostArea])
+            }
+            if hideAds {
+                scripts.append(.hideAds)
+            }
+            return scripts
+        }()
 
         switch column.type {
         case .forYou:
             WebView(
                 isLoading: $isLoading, url: $homeUrl, alertMessage: $alertMessage,
-                messageFromWebView: $topTabMessage,
+                messageFromWebView: $webViewMessage,
                 scriptExecutionRequest: $scriptExecutionRequest,
                 refreshSwitch: refreshSwitch,
                 configuration: WebViewConfigurations.makeConfiguration(
@@ -77,7 +84,7 @@ struct ContentView: View {
         case .following:
             WebView(
                 isLoading: $isLoading, url: $homeUrl, alertMessage: $alertMessage,
-                messageFromWebView: $followingTabMessage,
+                messageFromWebView: $webViewMessage,
                 scriptExecutionRequest: $scriptExecutionRequest,
                 refreshSwitch: refreshSwitch,
                 configuration: WebViewConfigurations.makeConfiguration(
@@ -87,7 +94,7 @@ struct ContentView: View {
             WebView(
                 isLoading: $isLoading, url: $notificationsUrl,
                 alertMessage: $alertMessage,
-                messageFromWebView: $notificationsViewMessage,
+                messageFromWebView: $webViewMessage,
                 scriptExecutionRequest: $scriptExecutionRequest,
                 refreshSwitch: refreshSwitch,
                 configuration: WebViewConfigurations.makeConfiguration(
@@ -97,7 +104,7 @@ struct ContentView: View {
             if let url = Binding(profileUrl) {
                 WebView(
                     isLoading: $isLoading, url: url, alertMessage: $alertMessage,
-                    messageFromWebView: $profileViewMessage,
+                    messageFromWebView: $webViewMessage,
                     scriptExecutionRequest: column.isXColumn ? $scriptExecutionRequest : .constant(nil),
                     refreshSwitch: refreshSwitch,
                     configuration: WebViewConfigurations.makeConfiguration(
@@ -108,7 +115,7 @@ struct ContentView: View {
             if let urlString = column.url, let url = URL(string: urlString) {
                 WebView(
                     isLoading: $isLoading, url: .constant(url), alertMessage: $alertMessage,
-                    messageFromWebView: $profileViewMessage,
+                    messageFromWebView: $webViewMessage,
                     scriptExecutionRequest: $scriptExecutionRequest,
                     refreshSwitch: refreshSwitch,
                     configuration: WebViewConfigurations.makeConfiguration(
@@ -138,7 +145,22 @@ struct ContentView: View {
             }.keyboardShortcut("r").opacity(0)
             Button(",") {
                 isShowConfirmOpenPreference = true
-            }.keyboardShortcut(",").opacity(0)
+            }
+            .keyboardShortcut(",")
+            .opacity(0)
+            .alert(isPresented: $isShowConfirmOpenPreference) {
+                Alert(
+                    title: Text("Do you open settings folder?"),
+                    message: Text("Please edit settings.json and restart app."),
+                    primaryButton: .default(
+                        Text("Open Folder"),
+                        action: {
+                            NSWorkspace.shared.open(AppConfig.configDirectoryUrl)
+                            isShowConfirmOpenPreference = false
+                        }),
+                    secondaryButton: .cancel(
+                        Text("Cancel"), action: { isShowConfirmOpenPreference = false }))
+            }
             if profileUrl != nil {
                 ScrollView(.horizontal) {
                     VStack(alignment: .leading, spacing: 0) {
@@ -152,6 +174,8 @@ struct ContentView: View {
                             }
                             Spacer()
                         }
+                    }.alert(isPresented: $isShowingAlert) {
+                        Alert(title: Text(alertMessage ?? ""))
                     }
                     HStack(spacing: 24) {
                         Button {
@@ -174,6 +198,15 @@ struct ContentView: View {
                                     isDarkMode: isDarkMode)
                                 backgroundColor = Self.defaultBackgroundColor(
                                     isDarkMode: isDarkMode)
+                            })
+                        HideAdsToggle(isOn: $hideAds) { Text("Hide Ads") }.onChange(
+                            of: hideAds,
+                            perform: { newValue in
+                                if newValue {
+                                    scriptExecutionRequest = WebViewConfigurations.hideAds
+                                } else {
+                                    scriptExecutionRequest = WebViewConfigurations.showAds
+                                }
                             })
                         Text("⌘+ Zoom In").foregroundColor(Self.textColor(for: backgroundColor))
                         Text("⌘- Zoom out").foregroundColor(Self.textColor(for: backgroundColor))
@@ -219,38 +252,28 @@ struct ContentView: View {
             }
         )
         .onChange(
-            of: topTabMessage,
-            perform: { topTabMessage in
-                if let messageText = topTabMessage,
+            of: webViewMessage,
+            perform: { rawMessage in
+                if let messageText = rawMessage,
                     let messageData = messageText.data(using: .utf8),
                     let message = try? JSONDecoder().decode(
-                        WebViewMessage.self, from: messageData),
-                    case .themeColor = message.type
+                        WebViewMessage.self, from: messageData)
                 {
-                    let color = Color(hex: message.body)
-                    backgroundColor = color
-                    isDarkMode = color != Color.white
+                    switch message.type {
+                    case .userName:
+                        if let url = URL(string: "https://x.com/\(message.body)") {
+                            profileUrl = url
+                        }
+                    case .themeColor:
+                        let color = Color(hex: message.body)
+                        backgroundColor = color
+                        isDarkMode = color != Color.white
+                    }
                 }
             }
         )
         .onChange(of: alertMessage) { message in
             isShowingAlert = message != nil
-        }
-        .alert(isPresented: $isShowingAlert) {
-            Alert(title: Text(alertMessage ?? ""))
-        }
-        .alert(isPresented: $isShowConfirmOpenPreference) {
-            Alert(
-                title: Text("Do you open settings folder?"),
-                message: Text("Please edit settings.json and restart app."),
-                primaryButton: .default(
-                    Text("Open Folder"),
-                    action: {
-                        NSWorkspace.shared.open(AppConfig.configDirectoryUrl)
-                        isShowConfirmOpenPreference = false
-                    }),
-                secondaryButton: .cancel(
-                    Text("Cancel"), action: { isShowConfirmOpenPreference = false }))
         }
     }
 }
