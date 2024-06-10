@@ -94,11 +94,13 @@ class Coordinator: NSObject, WKNavigationDelegate, WKUIDelegate, WKScriptMessage
     // MARK: WKUIDelegate
     func webView(_ webView: WKWebView, runJavaScriptAlertPanelWithMessage message: String, initiatedByFrame frame: WKFrameInfo) async {
         owner.alertMessage = message
+        print("🚨️ \(message)")
     }
 
     // MARK: WKScriptMessageHandler
     func userContentController(_ userContentController: WKUserContentController, didReceive message: WKScriptMessage) {
         guard message.name == WebViewConfigurations.handlerName else { return }
+        print("[WKScriptMessage] \(message.body)")
         owner.messageFromWebView = message.body as? String
     }
 }

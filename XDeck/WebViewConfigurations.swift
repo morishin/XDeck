@@ -3,21 +3,34 @@ import WebKit
 
 struct WebViewConfigurations {
     enum OnLoadScript {
+        case global
         case findUserName
         case findThemeColor
         case clickForYouTab
         case hidePostArea
         case clickFollowingTab
         case hideSideHeader
+        case hideAds
 
         var scriptContent: String {
             switch self {
+            case .global: return WebViewConfigurations.global
             case .findUserName: return WebViewConfigurations.findUserName
             case .findThemeColor: return WebViewConfigurations.findThemeColor
             case .clickForYouTab: return WebViewConfigurations.clickForYouTab
             case .hidePostArea: return WebViewConfigurations.hidePostArea
             case .clickFollowingTab: return WebViewConfigurations.clickFollowingTab
             case .hideSideHeader: return WebViewConfigurations.hideSideHeader
+            case .hideAds: return WebViewConfigurations.hideAds
+            }
+        }
+
+        var runAfterLoad: Bool {
+            switch self {
+            case .findUserName, .findThemeColor, .clickForYouTab, .clickFollowingTab, .hideSideHeader, .hidePostArea, .hideAds:
+                return true
+            case .global:
+                return false
             }
         }
     }
@@ -25,7 +38,10 @@ struct WebViewConfigurations {
     static let handlerName = "handler";
 
     static func makeConfiguration(onLoadScripts: [OnLoadScript]) -> WKWebViewConfiguration {
-        let script = wrapOnLoad(contents: onLoadScripts.map(\.scriptContent))
+        let script = [
+            onLoadScripts.filter({ !$0.runAfterLoad }).map(\.scriptContent).joined(separator: "\n"),
+            wrapOnLoad(contents: onLoadScripts.filter({ $0.runAfterLoad }).map(\.scriptContent)),
+        ].joined(separator: "\n")
         let configuration = WKWebViewConfiguration()
         let userContentController = WKUserContentController()
         configuration.userContentController = userContentController
@@ -35,6 +51,33 @@ struct WebViewConfigurations {
         userContentController.addUserScript(userScript)
         return configuration
     }
+
+    private static let global: String = """
+        window.onerror = function(msg, url, line, column, error) {
+            const message = JSON.stringify({ type: "debug", body: `❌️ ${msg}` });
+            webkit.messageHandlers.\(Self.handlerName).postMessage(message);
+        };
+        window.console.error = function(msg) {
+            const message = JSON.stringify({ type: "debug", body: `❌️ ${msg}` });
+            webkit.messageHandlers.\(Self.handlerName).postMessage(message);
+        };
+        window.console.warn = function(msg) {
+            const message = JSON.stringify({ type: "debug", body: `⚠️ ${msg}` });
+            webkit.messageHandlers.\(Self.handlerName).postMessage(message);
+        };
+        window.console.info = function(msg) {
+            const message = JSON.stringify({ type: "debug", body: `ℹ️ ${msg}` });
+            webkit.messageHandlers.\(Self.handlerName).postMessage(message);
+        };
+        window.console.log = function(msg) {
+            const message = JSON.stringify({ type: "debug", body: `ℹ️ ${msg}` });
+            webkit.messageHandlers.\(Self.handlerName).postMessage(message);
+        };
+
+        \(getElementsByXPath)
+
+        \(waitForElement)
+    """
 
     private static let hidePostArea: String = """
         const style = document.createElement('style');
@@ -107,4 +150,73 @@ struct WebViewConfigurations {
             observer.observe(document.body, { childList: true, subtree: true });
         }
         """
+
+    private static let getElementsByXPath: String = """
+        function getElementsByXPath(xpath, parent) {
+          let results = [];
+          let query = document.evaluate(
+            xpath,
+            parent || document,
+            null,
+            XPathResult.ORDERED_NODE_SNAPSHOT_TYPE,
+            null
+          );
+          for (let i = 0, length = query.snapshotLength; i < length; i++) {
+            results.push(query.snapshotItem(i));
+          }
+          return results;
+        }
+        """
+
+    static let hideAds: String = """
+        function hideAds(parent) {
+          let xpath =
+            '//div[@data-testid="cellInnerDiv" and descendant::span[text()="Ad"]]';
+          let elements = getElementsByXPath(xpath, parent);
+          if (elements.length > 0) {
+            // console.log(`hide ${elements.length} ads`)
+            elements.forEach((div) => {
+              // console.log(div.textContent);
+              div.style.display = "none";
+            });
+          }
+        }
+
+        if (!window.hideAdsMutationObserver) {
+          let observer = new MutationObserver((mutations) => {
+            mutations.forEach((mutation) => {
+              mutation.addedNodes.forEach((node) => {
+                if (node.nodeType === 1) {
+                  hideAds(node);
+                }
+              });
+            });
+          });
+
+          observer.observe(document.body, {
+            childList: true,
+            subtree: true,
+          });
+
+          window.hideAdsMutationObserver = observer;
+        }
+
+        hideAds(document);
+        """
+
+    static let showAds: String = """
+        (() => {
+          if (window.hideAdsMutationObserver) {
+            window.hideAdsMutationObserver.disconnect();
+            window.hideAdsMutationObserver = null;
+          }
+
+          let xpath =
+            '//div[@data-testid="cellInnerDiv" and descendant::span[text()="Ad"]]';
+          let elements = getElementsByXPath(xpath);
+          elements.forEach((div) => {
+            div.style.display = "flex";
+          });
+        })();
+    """
 }

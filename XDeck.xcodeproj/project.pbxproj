@@ -23,6 +23,7 @@
 		5B90B8CA2A8E6D7400185EAA /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 5B90B8C92A8E6D7400185EAA /* Preview Assets.xcassets */; };
 		5B90B8D22A8E6E6400185EAA /* WebView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B90B8D12A8E6E6400185EAA /* WebView.swift */; };
 		5B90B8D52A8E7A2F00185EAA /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B90B8D42A8E7A2F00185EAA /* LoginView.swift */; };
+		5BD50E852C14BBFE004D4A7E /* HideAdsToggle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BD50E842C14BBFE004D4A7E /* HideAdsToggle.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -44,6 +45,7 @@
 		5B90B8CB2A8E6D7400185EAA /* XDeck.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = XDeck.entitlements; sourceTree = "<group>"; };
 		5B90B8D12A8E6E6400185EAA /* WebView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebView.swift; sourceTree = "<group>"; };
 		5B90B8D42A8E7A2F00185EAA /* LoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
+		5BD50E842C14BBFE004D4A7E /* HideAdsToggle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HideAdsToggle.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -63,6 +65,7 @@
 				5B66C9672AE7FBF400D51830 /* Icon */,
 				5B90B8C42A8E6D7300185EAA /* ContentView.swift */,
 				5B1CC26E2A95944A00DF7D83 /* AppearanceToggle.swift */,
+				5BD50E842C14BBFE004D4A7E /* HideAdsToggle.swift */,
 				5B90B8D42A8E7A2F00185EAA /* LoginView.swift */,
 				5B90B8D12A8E6E6400185EAA /* WebView.swift */,
 			);
@@ -218,6 +221,7 @@
 				5B90B8C32A8E6D7300185EAA /* XDeckApp.swift in Sources */,
 				5B1CC2732A95969600DF7D83 /* MoonIcon.swift in Sources */,
 				5B0DC3542A8FC79400268684 /* WebViewConfigurations.swift in Sources */,
+				5BD50E852C14BBFE004D4A7E /* HideAdsToggle.swift in Sources */,
 				5B5F42252AAA368E0031658B /* AppConfig.swift in Sources */,
 				5B1CC26B2A95026F00DF7D83 /* GitHubIcon.swift in Sources */,
 				5B1CC2712A95968E00DF7D83 /* SunIcon.swift in Sources */,
