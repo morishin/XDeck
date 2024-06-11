@@ -183,18 +183,21 @@ struct ContentView: View {
                         Alert(title: Text(alertMessage ?? ""))
                     }
                     HStack(spacing: 24) {
-                        Button {
-                            openURL(URL(string: "https://github.com/morishin/XDeck")!)
-                        } label: {
-                            GitHubIcon().foregroundColor(
-                                Self.textColor(for: backgroundColor)
-                            ).frame(width: 20, height: 20)
-                        }.buttonStyle(.plain).onHover { inside in
-                            if inside {
-                                NSCursor.pointingHand.push()
-                            } else {
-                                NSCursor.pop()
+                        HStack(spacing: 8) {
+                            Button {
+                                openURL(URL(string: "https://github.com/morishin/XDeck")!)
+                            } label: {
+                                GitHubIcon().foregroundColor(
+                                    Self.textColor(for: backgroundColor)
+                                ).frame(width: 20, height: 20)
+                            }.buttonStyle(.plain).onHover { inside in
+                                if inside {
+                                    NSCursor.pointingHand.push()
+                                } else {
+                                    NSCursor.pop()
+                                }
                             }
+                            UpdateButton()
                         }
                         AppearanceToggle(isOn: $isDarkMode) {}.onChange(
                             of: isDarkMode,
@@ -218,7 +221,7 @@ struct ContentView: View {
                         } label: {
                             Label {
                                 Text("Sponsor")
-                                    .foregroundStyle(isDarkMode ? Color.white : Self.textColor(for: backgroundColor))
+                                    .foregroundStyle(Color.init(nsColor: .textColor))
                             } icon: {
                                 GitHubSponsorIcon()
                                     .foregroundColor(Color(hex: "#BF3989")).frame(
@@ -253,6 +256,7 @@ struct ContentView: View {
             }
         }
         .background(backgroundColor)
+        .colorScheme(isDarkMode ? .dark : .light)
         .onChange(
             of: loginViewMessage,
             perform: { loginViewMessage in
@@ -301,18 +305,18 @@ struct ContentView: View {
     }
 }
 
-struct ContentView_Previews: PreviewProvider {
-    private static var defaultConfig: AppConfig {
-        return AppConfig(columns: [
-            AppConfig.Column(type: .forYou),
-            AppConfig.Column(type: .following),
-            AppConfig.Column(type: .notifications),
-            AppConfig.Column(type: .profile),
-        ])
-    }
-
-    static var previews: some View {
-        ContentView(appConfig: defaultConfig)
-            .frame(minWidth: 1280, minHeight: 900)
-    }
-}
+//struct ContentView_Previews: PreviewProvider {
+//    private static var defaultConfig: AppConfig {
+//        return AppConfig(columns: [
+//            AppConfig.Column(type: .forYou),
+//            AppConfig.Column(type: .following),
+//            AppConfig.Column(type: .notifications),
+//            AppConfig.Column(type: .profile),
+//        ])
+//    }
+//
+//    static var previews: some View {
+//        ContentView(appConfig: defaultConfig)
+//            .frame(minWidth: 1280, minHeight: 900)
+//    }
+//}

@@ -24,6 +24,7 @@
 		5B90B8CA2A8E6D7400185EAA /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 5B90B8C92A8E6D7400185EAA /* Preview Assets.xcassets */; };
 		5B90B8D22A8E6E6400185EAA /* WebView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B90B8D12A8E6E6400185EAA /* WebView.swift */; };
 		5B90B8D52A8E7A2F00185EAA /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B90B8D42A8E7A2F00185EAA /* LoginView.swift */; };
+		5BC7F4812C17EA42002A37C2 /* UpdateButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BC7F4802C17EA42002A37C2 /* UpdateButton.swift */; };
 		5BD50E852C14BBFE004D4A7E /* HideAdsToggle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BD50E842C14BBFE004D4A7E /* HideAdsToggle.swift */; };
 /* End PBXBuildFile section */
 
@@ -47,6 +48,7 @@
 		5B90B8CB2A8E6D7400185EAA /* XDeck.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = XDeck.entitlements; sourceTree = "<group>"; };
 		5B90B8D12A8E6E6400185EAA /* WebView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebView.swift; sourceTree = "<group>"; };
 		5B90B8D42A8E7A2F00185EAA /* LoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
+		5BC7F4802C17EA42002A37C2 /* UpdateButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpdateButton.swift; sourceTree = "<group>"; };
 		5BD50E842C14BBFE004D4A7E /* HideAdsToggle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HideAdsToggle.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -66,6 +68,7 @@
 			children = (
 				5B66C9672AE7FBF400D51830 /* Icon */,
 				5B90B8C42A8E6D7300185EAA /* ContentView.swift */,
+				5BC7F4802C17EA42002A37C2 /* UpdateButton.swift */,
 				5B1CC26E2A95944A00DF7D83 /* AppearanceToggle.swift */,
 				5BD50E842C14BBFE004D4A7E /* HideAdsToggle.swift */,
 				5B90B8D42A8E7A2F00185EAA /* LoginView.swift */,
@@ -171,7 +174,7 @@
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
 				LastSwiftUpdateCheck = 1430;
-				LastUpgradeCheck = 1430;
+				LastUpgradeCheck = 1530;
 				TargetAttributes = {
 					5B90B8BE2A8E6D7300185EAA = {
 						CreatedOnToolsVersion = 14.3;
@@ -224,6 +227,7 @@
 				5B90B8C32A8E6D7300185EAA /* XDeckApp.swift in Sources */,
 				5B1CC2732A95969600DF7D83 /* MoonIcon.swift in Sources */,
 				5B4A3FE22C17646F00043FC1 /* GitHubSponsorIcon.swift in Sources */,
+				5BC7F4812C17EA42002A37C2 /* UpdateButton.swift in Sources */,
 				5B0DC3542A8FC79400268684 /* WebViewConfigurations.swift in Sources */,
 				5BD50E852C14BBFE004D4A7E /* HideAdsToggle.swift in Sources */,
 				5B5F42252AAA368E0031658B /* AppConfig.swift in Sources */,
@@ -239,6 +243,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
@@ -268,9 +273,11 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
+				DEAD_CODE_STRIPPING = YES;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_NO_COMMON_BLOCKS = YES;
@@ -286,7 +293,7 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				MACOSX_DEPLOYMENT_TARGET = 13.3;
-				MARKETING_VERSION = 2.0;
+				MARKETING_VERSION = 2.1;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -300,6 +307,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
@@ -329,9 +337,11 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
+				DEAD_CODE_STRIPPING = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
@@ -341,7 +351,7 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				MACOSX_DEPLOYMENT_TARGET = 13.3;
-				MARKETING_VERSION = 2.0;
+				MARKETING_VERSION = 2.1;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SDKROOT = macosx;
@@ -359,11 +369,13 @@
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
+				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_ASSET_PATHS = "\"XDeck/Preview Content\"";
 				DEVELOPMENT_TEAM = 4GERXBURZN;
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.social-networking";
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -385,11 +397,13 @@
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
+				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_ASSET_PATHS = "\"XDeck/Preview Content\"";
 				DEVELOPMENT_TEAM = 4GERXBURZN;
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.social-networking";
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
