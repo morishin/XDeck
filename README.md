@@ -6,7 +6,7 @@
 
 An 𝕏 client app for macOS as a TweetDeck alternative (with Ad-Blocking).
 
-[Download](https://github.com/morishin/XDeck/releases)
+[Download](https://github.com/morishin/XDeck/releases/latest)
 
 ![スクリーンショット 2024-06-14 0 25 40](https://github.com/morishin/XDeck/assets/1413408/855cbc09-8b2e-4f68-8f7d-1952f3daf060)
 
