@@ -208,7 +208,6 @@ struct ContentView: View {
                                                 columnWidth: dynamicColumnWidth
                                             )
                                         }
-                                        Spacer()
                                     }
                                 }
                                 .alert(isPresented: $isShowingAlert) {
