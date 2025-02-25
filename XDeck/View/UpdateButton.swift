@@ -9,6 +9,14 @@ struct UpdateButton: View {
         return Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String
     }
 
+    private static var isDebug: Bool {
+        #if DEBUG
+        return true
+        #else
+        return false
+        #endif
+    }
+
     var body: some View {
         if let currentVersion = Self.currentVersion {
             HStack {
@@ -21,7 +29,7 @@ struct UpdateButton: View {
                         .buttonStyle(.bordered)
                     }
                 } else {
-                    Button("v\(currentVersion)", action: {
+                    Button("v\(currentVersion)" + (Self.isDebug ? " (dev)" : ""), action: {
                         openURL(URL(string: "https://github.com/morishin/XDeck/releases/tag/\(currentVersion)")!)
                     }).buttonStyle(.plain)
                 }
@@ -53,7 +61,7 @@ struct UpdateButton: View {
             let (_, response) = try await URLSession.shared.data(for: request)
             if let latestReleaseUrlString = response.url?.absoluteString {
                 let latestVersion = extractVersion(from: latestReleaseUrlString)
-                let currentVersion = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "0.0"
+                let currentVersion = Self.currentVersion ?? "0.0"
                 if currentVersion.compare(latestVersion, options: .numeric) == .orderedAscending {
                     DispatchQueue.main.async {
                         self.latestVersion = latestVersion
