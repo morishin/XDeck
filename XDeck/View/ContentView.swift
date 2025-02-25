@@ -12,7 +12,7 @@ struct ContentView: View {
     @State var isShowingAlert: Bool = false
     @State var alertMessage: String? = nil
     @State var backgroundColor: Color = .white
-    @State var columnWidth: CGFloat
+    
     @State var refreshSwitch: Bool = false
     @State var scriptExecutionRequest: String? = nil
     @State var isShowConfirmOpenPreference: Bool = false
@@ -26,9 +26,7 @@ struct ContentView: View {
 
     @Environment(\.openURL) private var openURL
 
-    private static let defaultColumnWidth: CGFloat = 380
     private static let sideHeaderWidth: CGFloat = 68
-    private static let numberOfColumns = 4
     private static func defaultBackgroundColor(isDarkMode: Bool) -> Color {
         isDarkMode ? Color(hex: "#17202A") : Color(hex: "#FFFFFF")
     }
@@ -47,13 +45,11 @@ struct ContentView: View {
 
     init(appConfig: AppConfig) {
         self.appConfig = appConfig
-        self._columnWidth = State<CGFloat>(
-            initialValue: appConfig.columnWidth.map(CGFloat.init) ?? Self.defaultColumnWidth)
     }
 
     @ViewBuilder
     private func makeColumn(
-        column: AppConfig.Column, isLeftMostXColumn: Bool, profileUrl: Binding<URL?>
+        column: AppConfig.Column, isLeftMostXColumn: Bool, profileUrl: Binding<URL?>, columnWidth: CGFloat
     )
         -> some View
     {
@@ -133,175 +129,207 @@ struct ContentView: View {
     }()
 
     var body: some View {
-        ZStack {
-            Button("+") {
-                pageZoom = pageZoom + 0.2
-                columnWidth =
-                    (appConfig.columnWidth.map(CGFloat.init) ?? Self.defaultColumnWidth) * pageZoom
-            }.keyboardShortcut("+").opacity(0)
-            Button("-") {
-                pageZoom = pageZoom - 0.2
-                columnWidth =
-                    (appConfig.columnWidth.map(CGFloat.init) ?? Self.defaultColumnWidth) * pageZoom
-            }.keyboardShortcut("-").opacity(0)
-            Button("r") {
-                refreshSwitch = !refreshSwitch
-            }.keyboardShortcut("r").opacity(0)
-            Button(",") {
-                isShowConfirmOpenPreference = true
-            }
-            .keyboardShortcut(",")
-            .opacity(0)
-            .alert(isPresented: $isShowConfirmOpenPreference) {
-                Alert(
-                    title: Text("Do you open settings folder?"),
-                    message: Text("Please edit settings.json and restart app."),
-                    primaryButton: .default(
-                        Text("Open Folder"),
-                        action: {
-                            NSWorkspace.shared.open(AppConfig.configDirectoryUrl)
-                            isShowConfirmOpenPreference = false
-                        }),
-                    secondaryButton: .cancel(
-                        Text("Cancel"), action: { isShowConfirmOpenPreference = false }))
-            }
-            if profileUrl != nil {
-                ScrollView(.horizontal) {
-                    VStack(alignment: .leading, spacing: 0) {
-                        HStack(spacing: 0) {
-                            ForEach(appConfig.columns.indices, id: \.hashValue) { index in
-                                let isLeftMostXColumn =
-                                    index == (appConfig.columns.firstIndex { $0.isXColumn } ?? -1)
-                                makeColumn(
-                                    column: appConfig.columns[index],
-                                    isLeftMostXColumn: isLeftMostXColumn,
-                                    profileUrl: $profileUrl)
-                            }
-                            Spacer()
-                        }
-                    }.alert(isPresented: $isShowingAlert) {
-                        Alert(title: Text(alertMessage ?? ""))
-                    }
-                    HStack(spacing: 24) {
-                        HStack(spacing: 8) {
-                            Button {
-                                openURL(URL(string: "https://github.com/morishin/XDeck")!)
-                            } label: {
-                                GitHubIcon().foregroundColor(
-                                    Self.textColor(for: backgroundColor)
-                                ).frame(width: 20, height: 20)
-                            }.buttonStyle(.plain).onHover { inside in
-                                if inside {
-                                    NSCursor.pointingHand.push()
-                                } else {
-                                    NSCursor.pop()
-                                }
-                            }
-                            UpdateButton()
-                        }
-                        AppearanceToggle(isOn: $isDarkMode) {}.onChange(
-                            of: isDarkMode,
-                            perform: { newValue in
-                                scriptExecutionRequest = Self.setNightModeCookieScript(
-                                    isDarkMode: isDarkMode)
-                                backgroundColor = Self.defaultBackgroundColor(
-                                    isDarkMode: isDarkMode)
-                            })
-                        HideAdsToggle(isOn: $hideAds) { Text("Hide Ads") }.onChange(
-                            of: hideAds,
-                            perform: { newValue in
-                                if newValue {
-                                    scriptExecutionRequest = WebViewConfigurations.hideAds
-                                } else {
-                                    scriptExecutionRequest = WebViewConfigurations.showAds
-                                }
-                            })
-                        Button {
-                            openURL(URL(string: "https://github.com/sponsors/morishin")!)
-                        } label: {
-                            Label {
-                                Text("Sponsor")
-                                    .foregroundStyle(Color.init(nsColor: .textColor))
-                            } icon: {
-                                GitHubSponsorIcon()
-                                    .foregroundColor(Color(hex: "#BF3989")).frame(
-                                        width: 16, height: 16)
-                            }
-                        }.buttonStyle(.bordered).onHover { inside in
-                            if inside {
-                                NSCursor.pointingHand.push()
+        GeometryReader { geometry in
+                    // Determine the number of columns from the appConfig.
+                    let columnCount = appConfig.columns.count
+
+                    // If a manual width is provided in the app config, use it;
+                    // otherwise compute the base width dynamically.
+                    let manualWidth = appConfig.columnWidth.map(CGFloat.init)
+                    let baseWidth: CGFloat = {
+                        if let manualWidth = manualWidth {
+                            return manualWidth
+                        } else {
+                            // For one column, reserve space for the side header.
+                            if columnCount == 1 {
+                                return geometry.size.width - Self.sideHeaderWidth
                             } else {
-                                NSCursor.pop()
+                                // With multiple columns, subtract the side header width from the total available width.
+                                return (geometry.size.width - Self.sideHeaderWidth) / CGFloat(columnCount)
                             }
                         }
-                        Text("⌘+ Zoom In").foregroundColor(Self.textColor(for: backgroundColor))
-                        Text("⌘- Zoom out").foregroundColor(Self.textColor(for: backgroundColor))
-                        Text("⌘R Refresh").foregroundColor(Self.textColor(for: backgroundColor))
-                        Text("⌘, Settings").foregroundColor(Self.textColor(for: backgroundColor))
-                        Spacer()
-                    }
-                    .foregroundColor(Self.textColor(for: backgroundColor))
-                    .padding()
-                    .overlay(
-                        Rectangle()
-                            .frame(height: 1, alignment: .top)
-                            .foregroundColor(Self.borderColor(for: backgroundColor)),
-                        alignment: .top
-                    )
-                }
-            } else {
-                LoginView(
-                    isShowingAlert: $isShowingAlert,
-                    alertMessage: $alertMessage, loginViewMessage: $loginViewMessage)
-            }
-        }
-        .background(backgroundColor)
-        .colorScheme(isDarkMode ? .dark : .light)
-        .onChange(
-            of: loginViewMessage,
-            perform: { loginViewMessage in
-                if let messageText = loginViewMessage,
-                    let messageData = messageText.data(using: .utf8),
-                    let message = try? JSONDecoder().decode(
-                        WebViewMessage.self, from: messageData)
-                {
-                    switch message.type {
-                    case .userName:
-                        if let url = URL(string: "https://x.com/\(message.body)") {
-                            profileUrl = url
+                    }()
+
+                    // Apply the zoom factor.
+                    let dynamicColumnWidth = baseWidth * CGFloat(pageZoom)
+
+                    ZStack {
+                        // Update zoom buttons to change only the zoom factor.
+                        Button("+") {
+                            pageZoom += 0.2
                         }
-                    case .themeColor:
-                        let color = Color(hex: message.body)
-                        backgroundColor = color
-                        isDarkMode = color != Color.white
-                    }
-                }
-            }
-        )
-        .onChange(
-            of: webViewMessage,
-            perform: { rawMessage in
-                if let messageText = rawMessage,
-                    let messageData = messageText.data(using: .utf8),
-                    let message = try? JSONDecoder().decode(
-                        WebViewMessage.self, from: messageData)
-                {
-                    switch message.type {
-                    case .userName:
-                        if let url = URL(string: "https://x.com/\(message.body)") {
-                            profileUrl = url
+                        .keyboardShortcut("+")
+                        .opacity(0)
+
+                        Button("-") {
+                            pageZoom -= 0.2
                         }
-                    case .themeColor:
-                        let color = Color(hex: message.body)
-                        backgroundColor = color
-                        isDarkMode = color != Color.white
+                        .keyboardShortcut("-")
+                        .opacity(0)
+
+                        Button("r") {
+                            refreshSwitch.toggle()
+                        }
+                        .keyboardShortcut("r")
+                        .opacity(0)
+
+                        Button(",") {
+                            isShowConfirmOpenPreference = true
+                        }
+                        .keyboardShortcut(",")
+                        .opacity(0)
+                        .alert(isPresented: $isShowConfirmOpenPreference) {
+                            Alert(
+                                title: Text("Do you open settings folder?"),
+                                message: Text("Please edit settings.json and restart app."),
+                                primaryButton: .default(
+                                    Text("Open Folder"),
+                                    action: {
+                                        NSWorkspace.shared.open(AppConfig.configDirectoryUrl)
+                                        isShowConfirmOpenPreference = false
+                                    }),
+                                secondaryButton: .cancel(Text("Cancel"), action: {
+                                    isShowConfirmOpenPreference = false
+                                })
+                            )
+                        }
+
+                        if profileUrl != nil {
+                            ScrollView(.horizontal) {
+                                VStack(alignment: .leading, spacing: 0) {
+                                    HStack(spacing: 0) {
+                                        ForEach(appConfig.columns.indices, id: \.self) { index in
+                                            let isLeftMostXColumn =
+                                                index == (appConfig.columns.firstIndex { $0.isXColumn } ?? -1)
+                                            makeColumn(
+                                                column: appConfig.columns[index],
+                                                isLeftMostXColumn: isLeftMostXColumn,
+                                                profileUrl: $profileUrl,
+                                                columnWidth: dynamicColumnWidth
+                                            )
+                                        }
+                                        Spacer()
+                                    }
+                                }
+                                .alert(isPresented: $isShowingAlert) {
+                                    Alert(title: Text(alertMessage ?? ""))
+                                }
+                                HStack(spacing: 24) {
+                                    HStack(spacing: 8) {
+                                        Button {
+                                            openURL(URL(string: "https://github.com/morishin/XDeck")!)
+                                        } label: {
+                                            GitHubIcon()
+                                                .foregroundColor(Self.textColor(for: backgroundColor))
+                                                .frame(width: 20, height: 20)
+                                        }
+                                        .buttonStyle(.plain)
+                                        .onHover { inside in
+                                            if inside {
+                                                NSCursor.pointingHand.push()
+                                            } else {
+                                                NSCursor.pop()
+                                            }
+                                        }
+                                        UpdateButton()
+                                    }
+                                    AppearanceToggle(isOn: $isDarkMode) { }
+                                        .onChange(of: isDarkMode) { newValue in
+                                            scriptExecutionRequest = Self.setNightModeCookieScript(isDarkMode: isDarkMode)
+                                            backgroundColor = Self.defaultBackgroundColor(isDarkMode: isDarkMode)
+                                        }
+                                    HideAdsToggle(isOn: $hideAds) { Text("Hide Ads") }
+                                        .onChange(of: hideAds) { newValue in
+                                            scriptExecutionRequest = newValue
+                                                ? WebViewConfigurations.hideAds
+                                                : WebViewConfigurations.showAds
+                                        }
+                                    Button {
+                                        openURL(URL(string: "https://github.com/sponsors/morishin")!)
+                                    } label: {
+                                        Label {
+                                            Text("Sponsor")
+                                                .foregroundStyle(Color(nsColor: .textColor))
+                                        } icon: {
+                                            GitHubSponsorIcon()
+                                                .foregroundColor(Color(hex: "#BF3989"))
+                                                .frame(width: 16, height: 16)
+                                        }
+                                    }
+                                    .buttonStyle(.bordered)
+                                    .onHover { inside in
+                                        if inside {
+                                            NSCursor.pointingHand.push()
+                                        } else {
+                                            NSCursor.pop()
+                                        }
+                                    }
+                                    Text("⌘+ Zoom In")
+                                        .foregroundColor(Self.textColor(for: backgroundColor))
+                                    Text("⌘- Zoom out")
+                                        .foregroundColor(Self.textColor(for: backgroundColor))
+                                    Text("⌘R Refresh")
+                                        .foregroundColor(Self.textColor(for: backgroundColor))
+                                    Text("⌘, Settings")
+                                        .foregroundColor(Self.textColor(for: backgroundColor))
+                                    Spacer()
+                                }
+                                .foregroundColor(Self.textColor(for: backgroundColor))
+                                .padding()
+                                .overlay(
+                                    Rectangle()
+                                        .frame(height: 1, alignment: .top)
+                                        .foregroundColor(Self.borderColor(for: backgroundColor)),
+                                    alignment: .top
+                                )
+                            }
+                        } else {
+                            LoginView(
+                                isShowingAlert: $isShowingAlert,
+                                alertMessage: $alertMessage,
+                                loginViewMessage: $loginViewMessage
+                            )
+                        }
                     }
-                }
-            }
-        )
-        .onChange(of: alertMessage) { message in
-            isShowingAlert = message != nil
-        }
+                    .background(backgroundColor)
+                    .colorScheme(isDarkMode ? .dark : .light)
+                    // The onChange modifiers for loginViewMessage, webViewMessage, and alertMessage remain unchanged.
+                    .onChange(of: loginViewMessage) { loginViewMessage in
+                        if let messageText = loginViewMessage,
+                           let messageData = messageText.data(using: .utf8),
+                           let message = try? JSONDecoder().decode(WebViewMessage.self, from: messageData) {
+                            switch message.type {
+                            case .userName:
+                                if let url = URL(string: "https://x.com/\(message.body)") {
+                                    profileUrl = url
+                                }
+                            case .themeColor:
+                                let color = Color(hex: message.body)
+                                backgroundColor = color
+                                isDarkMode = color != Color.white
+                            }
+                        }
+                    }
+                    .onChange(of: webViewMessage) { rawMessage in
+                        if let messageText = rawMessage,
+                           let messageData = messageText.data(using: .utf8),
+                           let message = try? JSONDecoder().decode(WebViewMessage.self, from: messageData) {
+                            switch message.type {
+                            case .userName:
+                                if let url = URL(string: "https://x.com/\(message.body)") {
+                                    profileUrl = url
+                                }
+                            case .themeColor:
+                                let color = Color(hex: message.body)
+                                backgroundColor = color
+                                isDarkMode = color != Color.white
+                            }
+                        }
+                    }
+                    .onChange(of: alertMessage) { message in
+                        isShowingAlert = message != nil
+                    }
+                } // End of GeometryReader
     }
 }
 
