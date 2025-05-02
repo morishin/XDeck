@@ -244,14 +244,13 @@ struct ContentView: View {
                                                 : WebViewConfigurations.showAds
                                         }
                                     Button {
-                                        openURL(URL(string: "https://github.com/sponsors/morishin")!)
+                                        openURL(URL(string: "https://github.com/sponsors/morishin?frequency=one-time")!)
                                     } label: {
                                         Label {
-                                            Text("Sponsor")
+                                            Text("Buy me a coffee")
                                                 .foregroundStyle(Color(nsColor: .textColor))
                                         } icon: {
-                                            GitHubSponsorIcon()
-                                                .foregroundColor(Color(hex: "#BF3989"))
+                                            Image(systemName: "cup.and.saucer.fill")
                                                 .frame(width: 16, height: 16)
                                         }
                                     }
