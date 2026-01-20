@@ -87,10 +87,18 @@ struct WebViewConfigurations {
     """
 
     private static let findUserName: String = """
-        waitForElement("a[href$='/lists']", 0, (element) => {
-            const userName = element.href.match(/x.com\\/(?<userName>.+)\\/lists/).groups.userName;
-            const message = JSON.stringify({ type: "userName", body: userName });
-            webkit.messageHandlers.\(Self.handlerName).postMessage(message);
+        waitForElement("a[aria-label='Profile'], a[data-testid='AppTabBar_Profile_Link']", 0, (element) => {
+            const href = element.getAttribute('href') || element.href || '';
+            let userName = null;
+            try {
+                const url = new URL(href, window.location.origin);
+                const segments = url.pathname.split('/').filter(Boolean);
+                userName = segments[0] || null;
+            } catch (_) {}
+            if (userName) {
+                const message = JSON.stringify({ type: "userName", body: userName });
+                webkit.messageHandlers.\(Self.handlerName).postMessage(message);
+            }
         });
     """
 
