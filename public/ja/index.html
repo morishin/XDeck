@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>XDeck — マルチカラム表示の macOS 用 𝕏 クライアント</title>
+  <meta name="description" content="XDeck は 𝕏（旧 Twitter）をマルチカラムで表示できる macOS 用クライアントアプリ。広告ブロック機能つき、無料・オープンソース。">
+  <meta name="keywords" content="XDeck, X クライアント, Twitter クライアント, TweetDeck 代替, macOS, マルチカラム, 広告ブロック, Mac アプリ, オープンソース">
+  <meta name="author" content="morishin">
+  <meta name="robots" content="index, follow">
+  <meta name="theme-color" content="#0a0a0a" media="(prefers-color-scheme: dark)">
+  <meta name="theme-color" content="#f5f3ee" media="(prefers-color-scheme: light)">
+  <link rel="canonical" href="https://xdeck.morishin.me/ja/">
+  <link rel="alternate" hreflang="en" href="https://xdeck.morishin.me/">
+  <link rel="alternate" hreflang="ja" href="https://xdeck.morishin.me/ja/">
+  <link rel="alternate" hreflang="x-default" href="https://xdeck.morishin.me/">
+  <link rel="icon" href="../assets/icon.png">
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="XDeck">
+  <meta property="og:title" content="XDeck — マルチカラム表示の macOS 用 𝕏 クライアント">
+  <meta property="og:description" content="広告ブロック機能つき、TweetDeck の代替となる macOS 用 𝕏 クライアント。無料・オープンソース。">
+  <meta property="og:url" content="https://xdeck.morishin.me/ja/">
+  <meta property="og:locale" content="ja_JP">
+  <meta property="og:locale:alternate" content="en_US">
+  <meta property="og:image" content="https://xdeck.morishin.me/assets/screenshot.jpg">
+  <meta property="og:image:width" content="1920">
+  <meta property="og:image:height" content="1050">
+  <meta property="og:image:alt" content="複数のカラムを並べて表示している macOS 上の XDeck">
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="XDeck — マルチカラム表示の macOS 用 𝕏 クライアント">
+  <meta name="twitter:description" content="広告ブロック機能つき、TweetDeck の代替となる macOS 用 𝕏 クライアント。無料・オープンソース。">
+  <meta name="twitter:image" content="https://xdeck.morishin.me/assets/screenshot.jpg">
+  <meta name="twitter:creator" content="@morishin127">
+
+  <!-- Structured Data -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "XDeck",
+    "operatingSystem": "macOS",
+    "applicationCategory": "SocialNetworkingApplication",
+    "description": "マルチカラム表示に対応した macOS 用 𝕏 クライアント。広告ブロック機能つきの TweetDeck 代替アプリ。",
+    "url": "https://xdeck.morishin.me/ja/",
+    "downloadUrl": "https://github.com/morishin/XDeck/releases/latest",
+    "image": "https://xdeck.morishin.me/assets/screenshot.jpg",
+    "author": { "@type": "Person", "name": "morishin", "url": "https://github.com/morishin" },
+    "offers": { "@type": "Offer", "price": "0", "priceCurrency": "JPY" },
+    "isAccessibleForFree": true
+  }
+  </script>
+
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+<body>
+
+<header class="site-header">
+  <a href="/ja/" class="site-logo">
+    <img src="../assets/icon.png" alt="">
+    <span>XDeck</span>
+  </a>
+  <div class="header-right">
+    <span class="header-meta">Free &amp; Open Source</span>
+    <nav class="lang-switch">
+      <a href="/">EN</a>
+      <a href="/ja/" class="active">JA</a>
+    </nav>
+  </div>
+</header>
+
+<main class="hero">
+  <div class="eyebrow rise rise-1">
+    <span class="dot"></span>
+    <span>非公式 𝕏 クライアント for macOS</span>
+  </div>
+
+  <h1 class="rise rise-2">
+    <span class="x-mark">𝕏</span> の<em>すべて</em>を、<br>
+    ひとつのウィンドウに。
+  </h1>
+
+  <p class="lead rise rise-3">
+    XDeck は、Mac にマルチカラムのタイムラインを取り戻すアプリです。
+    フォロー中・リスト・通知・検索を <strong>同時に表示</strong>。
+    広告は静かにブロックされます。
+  </p>
+
+  <div class="cta-wrap rise rise-4">
+    <a href="https://github.com/morishin/XDeck/releases/latest" class="hero-cta">
+      <span>ダウンロード</span>
+      <span class="arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m13 6 6 6-6 6"/></svg></span>
+    </a>
+  </div>
+</main>
+
+<section class="showcase rise rise-5">
+  <div class="showcase-frame">
+    <img src="../assets/screenshot.jpg" width="1920" height="1050" alt="複数のカラムを並べて表示している macOS 上の XDeck">
+  </div>
+</section>
+
+<section class="config">
+  <div class="config-inner">
+    <div>
+      <div class="config-eyebrow">Configuration</div>
+      <h2>自分<em>だけ</em>のデッキを。</h2>
+      <p><kbd>⌘,</kbd> で <code>settings.json</code> を開いて、カラムを自由に並べ替えられます。フォロー中・おすすめ・通知・プロフィール、リストなど任意の URL も指定可能です。</p>
+      <p>カラムごとに表示・並び順・幅をカスタマイズ。あなただけのデッキを作りましょう。</p>
+    </div>
+    <div class="config-code">
+      <div class="code-head">
+        <span class="dots"><span></span><span></span><span></span></span>
+        <span>settings.json</span>
+      </div>
+<pre><span class="tok-pun">{</span>
+  <span class="tok-key">"$schema"</span><span class="tok-pun">:</span> <span class="tok-str">"./schema.json"</span><span class="tok-pun">,</span>
+  <span class="tok-key">"columnWidth"</span><span class="tok-pun">:</span> <span class="tok-num">450</span><span class="tok-pun">,</span>
+  <span class="tok-key">"columns"</span><span class="tok-pun">: [</span>
+    <span class="tok-pun">{</span> <span class="tok-key">"type"</span><span class="tok-pun">:</span> <span class="tok-str">"following"</span> <span class="tok-pun">},</span>
+    <span class="tok-pun">{</span> <span class="tok-key">"type"</span><span class="tok-pun">:</span> <span class="tok-str">"forYou"</span> <span class="tok-pun">},</span>
+    <span class="tok-pun">{</span> <span class="tok-key">"type"</span><span class="tok-pun">:</span> <span class="tok-str">"notifications"</span> <span class="tok-pun">},</span>
+    <span class="tok-pun">{</span> <span class="tok-key">"type"</span><span class="tok-pun">:</span> <span class="tok-str">"profile"</span> <span class="tok-pun">},</span>
+    <span class="tok-pun">{</span>
+      <span class="tok-key">"type"</span><span class="tok-pun">:</span> <span class="tok-str">"custom"</span><span class="tok-pun">,</span>
+      <span class="tok-key">"url"</span><span class="tok-pun">:</span> <span class="tok-str">"https://x.com/i/lists/123456789"</span>
+    <span class="tok-pun">}</span>
+  <span class="tok-pun">]</span>
+<span class="tok-pun">}</span></pre>
+    </div>
+  </div>
+</section>
+
+<footer class="site-footer">
+  <div>© 2026 XDeck</div>
+  <div class="footer-links">
+    <a href="https://github.com/morishin/XDeck">GitHub</a>
+    <a href="https://github.com/morishin/XDeck/releases">リリース</a>
+    <a href="https://github.com/morishin/XDeck/issues">Issues</a>
+  </div>
+</footer>
+
+</body>
+</html>

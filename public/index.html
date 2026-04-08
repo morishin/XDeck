@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>XDeck — A multi-column 𝕏 client for macOS</title>
+  <meta name="description" content="XDeck is a multi-column 𝕏 (Twitter) client for macOS — a TweetDeck alternative with built-in ad blocking. Free and open source.">
+  <meta name="keywords" content="XDeck, X client, Twitter client, TweetDeck alternative, macOS, multi-column, ad blocking, Mac app, open source">
+  <meta name="author" content="morishin">
+  <meta name="robots" content="index, follow">
+  <meta name="theme-color" content="#0a0a0a" media="(prefers-color-scheme: dark)">
+  <meta name="theme-color" content="#f5f3ee" media="(prefers-color-scheme: light)">
+  <link rel="canonical" href="https://xdeck.morishin.me/">
+  <link rel="alternate" hreflang="en" href="https://xdeck.morishin.me/">
+  <link rel="alternate" hreflang="ja" href="https://xdeck.morishin.me/ja/">
+  <link rel="alternate" hreflang="x-default" href="https://xdeck.morishin.me/">
+  <link rel="icon" href="assets/icon.png">
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="XDeck">
+  <meta property="og:title" content="XDeck — A multi-column 𝕏 client for macOS">
+  <meta property="og:description" content="A TweetDeck alternative for macOS with built-in ad blocking. Free and open source.">
+  <meta property="og:url" content="https://xdeck.morishin.me/">
+  <meta property="og:locale" content="en_US">
+  <meta property="og:locale:alternate" content="ja_JP">
+  <meta property="og:image" content="https://xdeck.morishin.me/assets/screenshot.jpg">
+  <meta property="og:image:width" content="1920">
+  <meta property="og:image:height" content="1050">
+  <meta property="og:image:alt" content="XDeck running on macOS with multiple 𝕏 columns side by side">
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="XDeck — A multi-column 𝕏 client for macOS">
+  <meta name="twitter:description" content="A TweetDeck alternative for macOS with built-in ad blocking. Free and open source.">
+  <meta name="twitter:image" content="https://xdeck.morishin.me/assets/screenshot.jpg">
+  <meta name="twitter:creator" content="@morishin127">
+
+  <!-- Structured Data -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "XDeck",
+    "operatingSystem": "macOS",
+    "applicationCategory": "SocialNetworkingApplication",
+    "description": "A multi-column 𝕏 (Twitter) client for macOS — a TweetDeck alternative with built-in ad blocking.",
+    "url": "https://xdeck.morishin.me/",
+    "downloadUrl": "https://github.com/morishin/XDeck/releases/latest",
+    "image": "https://xdeck.morishin.me/assets/screenshot.jpg",
+    "author": { "@type": "Person", "name": "morishin", "url": "https://github.com/morishin" },
+    "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+    "isAccessibleForFree": true
+  }
+  </script>
+
+  <link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+
+<header class="site-header">
+  <a href="/" class="site-logo">
+    <img src="assets/icon.png" alt="">
+    <span>XDeck</span>
+  </a>
+  <div class="header-right">
+    <span class="header-meta">Free &amp; Open Source</span>
+    <nav class="lang-switch">
+      <a href="/" class="active">EN</a>
+      <a href="/ja/">JA</a>
+    </nav>
+  </div>
+</header>
+
+<main class="hero">
+  <div class="eyebrow rise rise-1">
+    <span class="dot"></span>
+    <span>An unofficial 𝕏 client for macOS</span>
+  </div>
+
+  <h1 class="rise rise-2">
+    Your <em>entire</em> <span class="x-mark">𝕏</span><br>
+    in one window.
+  </h1>
+
+  <p class="lead rise rise-3">
+    XDeck brings the multi-column timeline back to your Mac.
+    Following, lists, notifications, search — <strong>all visible at once</strong>,
+    with ads quietly blocked in the background.
+  </p>
+
+  <div class="cta-wrap rise rise-4">
+    <a href="https://github.com/morishin/XDeck/releases/latest" class="hero-cta">
+      <span>Download</span>
+      <span class="arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m13 6 6 6-6 6"/></svg></span>
+    </a>
+  </div>
+</main>
+
+<section class="showcase rise rise-5">
+  <div class="showcase-frame">
+    <img src="assets/screenshot.jpg" width="1920" height="1050" alt="XDeck running on macOS with multiple 𝕏 columns side by side">
+  </div>
+</section>
+
+<section class="config">
+  <div class="config-inner">
+    <div>
+      <div class="config-eyebrow">Configuration</div>
+      <h2>Build your <em>own</em> deck.</h2>
+      <p>Press <kbd>⌘,</kbd> to open <code>settings.json</code> and arrange your columns however you like — Following, For You, Notifications, Profile, or any custom URL such as a list.</p>
+      <p>Each column can be customized, reordered, and resized. Your deck, your rules.</p>
+    </div>
+    <div class="config-code">
+      <div class="code-head">
+        <span class="dots"><span></span><span></span><span></span></span>
+        <span>settings.json</span>
+      </div>
+<pre><span class="tok-pun">{</span>
+  <span class="tok-key">"$schema"</span><span class="tok-pun">:</span> <span class="tok-str">"./schema.json"</span><span class="tok-pun">,</span>
+  <span class="tok-key">"columnWidth"</span><span class="tok-pun">:</span> <span class="tok-num">450</span><span class="tok-pun">,</span>
+  <span class="tok-key">"columns"</span><span class="tok-pun">: [</span>
+    <span class="tok-pun">{</span> <span class="tok-key">"type"</span><span class="tok-pun">:</span> <span class="tok-str">"following"</span> <span class="tok-pun">},</span>
+    <span class="tok-pun">{</span> <span class="tok-key">"type"</span><span class="tok-pun">:</span> <span class="tok-str">"forYou"</span> <span class="tok-pun">},</span>
+    <span class="tok-pun">{</span> <span class="tok-key">"type"</span><span class="tok-pun">:</span> <span class="tok-str">"notifications"</span> <span class="tok-pun">},</span>
+    <span class="tok-pun">{</span> <span class="tok-key">"type"</span><span class="tok-pun">:</span> <span class="tok-str">"profile"</span> <span class="tok-pun">},</span>
+    <span class="tok-pun">{</span>
+      <span class="tok-key">"type"</span><span class="tok-pun">:</span> <span class="tok-str">"custom"</span><span class="tok-pun">,</span>
+      <span class="tok-key">"url"</span><span class="tok-pun">:</span> <span class="tok-str">"https://x.com/i/lists/123456789"</span>
+    <span class="tok-pun">}</span>
+  <span class="tok-pun">]</span>
+<span class="tok-pun">}</span></pre>
+    </div>
+  </div>
+</section>
+
+<footer class="site-footer">
+  <div>© 2026 XDeck</div>
+  <div class="footer-links">
+    <a href="https://github.com/morishin/XDeck">GitHub</a>
+    <a href="https://github.com/morishin/XDeck/releases">Releases</a>
+    <a href="https://github.com/morishin/XDeck/issues">Issues</a>
+  </div>
+</footer>
+
+</body>
+</html>
