@@ -309,19 +309,22 @@ a { color: inherit; text-decoration: none; }
 
 .showcase-frame {
   position: relative;
+}
+.showcase-scroll {
   overflow-x: auto;
   -webkit-overflow-scrolling: touch;
   scrollbar-width: thin;
+  border-radius: 6px;
+  box-shadow: 0 30px 80px -20px rgba(0,0,0,0.85);
 }
-.showcase-frame img {
+.showcase-scroll img {
   display: block;
   width: 100%;
   height: auto;
   border-radius: 6px;
-  box-shadow: 0 60px 120px -30px rgba(0,0,0,0.55);
 }
 @media (max-width: 720px) {
-  .showcase-frame img {
+  .showcase-scroll img {
     width: auto;
     height: 70vh;
     max-height: 560px;
