@@ -110,7 +110,6 @@ a { color: inherit; text-decoration: none; }
   width: 30px;
   height: 30px;
   border-radius: 7px;
-  box-shadow: 0 0 0 1px var(--rule);
 }
 
 .header-right {
