@@ -19,6 +19,7 @@ struct ContentView: View {
 
     @State var webViewMessage: String? = nil
     @State var loginViewMessage: String? = nil
+    @State var expandedColumnIndex: Int? = nil
 
     @State var homeUrl: URL = URL(string: "https://x.com/home")!
     @State var notificationsUrl: URL = URL(string: "https://x.com/notifications")!
@@ -49,14 +50,14 @@ struct ContentView: View {
 
     @ViewBuilder
     private func makeColumn(
-        column: AppConfig.Column, isLeftMostXColumn: Bool, profileUrl: Binding<URL?>, columnWidth: CGFloat
+        column: AppConfig.Column, columnIndex: Int, isLeftMostXColumn: Bool, profileUrl: Binding<URL?>, columnWidth: CGFloat
     )
         -> some View
     {
         let width = isLeftMostXColumn ? columnWidth + Self.sideHeaderWidth : columnWidth
 
         let baseConfiguration: [WebViewConfigurations.OnLoadScript] = {
-            var scripts: [WebViewConfigurations.OnLoadScript] = [.global]
+            var scripts: [WebViewConfigurations.OnLoadScript] = [.global, .detectMediaOverlay(columnIndex: columnIndex)]
             if isLeftMostXColumn {
                 scripts.append(.findThemeColor)
             } else if column.isXColumn {
@@ -201,12 +202,19 @@ struct ContentView: View {
                                         ForEach(appConfig.columns.indices, id: \.self) { index in
                                             let isLeftMostXColumn =
                                                 index == (appConfig.columns.firstIndex { $0.isXColumn } ?? -1)
+                                            let isExpanded = expandedColumnIndex == index
+                                            let isHidden = expandedColumnIndex != nil && !isExpanded
+                                            let effectiveWidth: CGFloat = isExpanded
+                                                ? (isLeftMostXColumn ? geometry.size.width - Self.sideHeaderWidth : geometry.size.width)
+                                                : dynamicColumnWidth
                                             makeColumn(
                                                 column: appConfig.columns[index],
+                                                columnIndex: index,
                                                 isLeftMostXColumn: isLeftMostXColumn,
                                                 profileUrl: $profileUrl,
-                                                columnWidth: dynamicColumnWidth
+                                                columnWidth: isHidden ? 0 : effectiveWidth
                                             )
+                                            .opacity(isHidden ? 0 : 1)
                                         }
                                     }
                                 }
@@ -288,6 +296,7 @@ struct ContentView: View {
                                 loginViewMessage: $loginViewMessage
                             )
                         }
+
                     }
                     .background(backgroundColor)
                     .colorScheme(isDarkMode ? .dark : .light)
@@ -305,6 +314,8 @@ struct ContentView: View {
                                 let color = Color(hex: message.body)
                                 backgroundColor = color
                                 isDarkMode = color != Color.white
+                            case .mediaOverlay:
+                                break
                             }
                         }
                     }
@@ -321,6 +332,12 @@ struct ContentView: View {
                                 let color = Color(hex: message.body)
                                 backgroundColor = color
                                 isDarkMode = color != Color.white
+                            case .mediaOverlay:
+                                if message.body == "close" {
+                                    expandedColumnIndex = nil
+                                } else if let index = Int(message.body) {
+                                    expandedColumnIndex = index
+                                }
                             }
                         }
                     }

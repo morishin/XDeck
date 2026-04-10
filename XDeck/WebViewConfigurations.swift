@@ -11,6 +11,7 @@ struct WebViewConfigurations {
         case clickFollowingTab
         case hideSideHeader
         case hideAds
+        case detectMediaOverlay(columnIndex: Int)
 
         var scriptContent: String {
             switch self {
@@ -22,6 +23,7 @@ struct WebViewConfigurations {
             case .clickFollowingTab: return WebViewConfigurations.clickFollowingTab
             case .hideSideHeader: return WebViewConfigurations.hideSideHeader
             case .hideAds: return WebViewConfigurations.hideAds
+            case .detectMediaOverlay(let columnIndex): return WebViewConfigurations.detectMediaOverlay(columnIndex: columnIndex)
             }
         }
 
@@ -29,7 +31,7 @@ struct WebViewConfigurations {
             switch self {
             case .findUserName, .findThemeColor, .clickForYouTab, .clickFollowingTab, .hideSideHeader, .hidePostArea, .hideAds:
                 return true
-            case .global:
+            case .global, .detectMediaOverlay:
                 return false
             }
         }
@@ -219,4 +221,31 @@ struct WebViewConfigurations {
           });
         })();
     """
+
+    private static func detectMediaOverlay(columnIndex: Int) -> String {
+        return """
+            (function() {
+                var mediaExpanded = false;
+                const originalPushState = history.pushState;
+                history.pushState = function() {
+                    originalPushState.apply(this, arguments);
+                    const url = window.location.href;
+                    if (!mediaExpanded && /\\/(photo|video)\\/\\d+/.test(url)) {
+                        mediaExpanded = true;
+                        const message = JSON.stringify({ type: "mediaOverlay", body: String(\(columnIndex)) });
+                        webkit.messageHandlers.\(Self.handlerName).postMessage(message);
+                    }
+                };
+                window.addEventListener('popstate', function() {
+                    const url = window.location.href;
+                    if (mediaExpanded && !/\\/(photo|video)\\/\\d+/.test(url)) {
+                        mediaExpanded = false;
+                        const message = JSON.stringify({ type: "mediaOverlay", body: "close" });
+                        webkit.messageHandlers.\(Self.handlerName).postMessage(message);
+                    }
+                });
+            })();
+        """
+    }
 }
+
