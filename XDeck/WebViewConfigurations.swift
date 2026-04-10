@@ -177,9 +177,8 @@ struct WebViewConfigurations {
         """
 
     static let hideAds: String = """
-        function hideAds(parent) {
-          const root = parent || document;
-          const cells = root.querySelectorAll('div[data-testid="cellInnerDiv"]');
+        function hideAds() {
+          const cells = document.querySelectorAll('div[data-testid="cellInnerDiv"]');
           cells.forEach((cell) => {
             if (cell.querySelector('div[data-testid="placementTracking"]')) {
               cell.style.display = "none";
@@ -188,14 +187,10 @@ struct WebViewConfigurations {
         }
 
         if (!window.hideAdsMutationObserver) {
-          let observer = new MutationObserver((mutations) => {
-            mutations.forEach((mutation) => {
-              mutation.addedNodes.forEach((node) => {
-                if (node.nodeType === 1) {
-                  hideAds(node);
-                }
-              });
-            });
+          let hideAdsTimer;
+          let observer = new MutationObserver(() => {
+            clearTimeout(hideAdsTimer);
+            hideAdsTimer = setTimeout(hideAds, 100);
           });
 
           observer.observe(document.body, {
@@ -206,7 +201,7 @@ struct WebViewConfigurations {
           window.hideAdsMutationObserver = observer;
         }
 
-        hideAds(document);
+        hideAds();
         """
 
     static let showAds: String = """
