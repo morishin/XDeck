@@ -24,7 +24,7 @@ struct WebView: NSViewRepresentable {
             webView = WKWebView()
         }
         // Pretend Safari because 𝕏 bans the user agent of WebView
-        webView.customUserAgent = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.1.2 Safari/605.1.15"
+        webView.customUserAgent = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.3 Safari/605.1.15"
         webView.navigationDelegate = context.coordinator
         webView.uiDelegate = context.coordinator
         let request = URLRequest(url: url)
@@ -33,7 +33,7 @@ struct WebView: NSViewRepresentable {
     }
 
     func updateNSView(_ webView: WKWebView, context: Context) {
-        if let url = webView.url, url != context.coordinator.lastUrl {
+        if url != context.coordinator.lastUrl {
             let request = URLRequest(url: url)
             context.coordinator.lastUrl = url
             webView.load(request)
