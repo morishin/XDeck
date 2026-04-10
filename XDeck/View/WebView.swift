@@ -41,7 +41,7 @@ struct WebView: NSViewRepresentable {
         if refreshSwitch != context.coordinator.refreshSwitch {
             let request = URLRequest(url: url)
             webView.load(request)
-            context.coordinator.refreshSwitch = !refreshSwitch
+            context.coordinator.refreshSwitch = refreshSwitch
         } else if let script = scriptExecutionRequest {
             webView.evaluateJavaScript(script)
             DispatchQueue.main.async {
