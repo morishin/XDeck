@@ -178,16 +178,13 @@ struct WebViewConfigurations {
 
     static let hideAds: String = """
         function hideAds(parent) {
-          let xpath =
-            '//div[@data-testid="cellInnerDiv" and descendant::span[text()="Ad"]]';
-          let elements = getElementsByXPath(xpath, parent);
-          if (elements.length > 0) {
-            // console.log(`hide ${elements.length} ads`)
-            elements.forEach((div) => {
-              // console.log(div.textContent);
-              div.style.display = "none";
-            });
-          }
+          const root = parent || document;
+          const cells = root.querySelectorAll('div[data-testid="cellInnerDiv"]');
+          cells.forEach((cell) => {
+            if (cell.querySelector('div[data-testid="placementTracking"]')) {
+              cell.style.display = "none";
+            }
+          });
         }
 
         if (!window.hideAdsMutationObserver) {
@@ -219,11 +216,11 @@ struct WebViewConfigurations {
             window.hideAdsMutationObserver = null;
           }
 
-          let xpath =
-            '//div[@data-testid="cellInnerDiv" and descendant::span[text()="Ad"]]';
-          let elements = getElementsByXPath(xpath);
-          elements.forEach((div) => {
-            div.style.display = "flex";
+          const cells = document.querySelectorAll('div[data-testid="cellInnerDiv"]');
+          cells.forEach((cell) => {
+            if (cell.querySelector('div[data-testid="placementTracking"]')) {
+              cell.style.display = "flex";
+            }
           });
         })();
     """
