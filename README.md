@@ -2,7 +2,7 @@
 
 [![license](https://img.shields.io/npm/l/svelte.svg)](LICENSE)
 
-<img src="https://github.com/morishin/XDeck/assets/1413408/30ad3048-e606-47c3-afe3-6f706e8ebf85" width="128"/>
+<img width="120" height="120" alt="XDeck-iOS-Default-1024x1024@1x" src="https://github.com/user-attachments/assets/b0076952-c7b4-4024-a337-8df37c05f88c" />
 
 An 𝕏 client app for macOS as a TweetDeck alternative (with Ad-Blocking).
 
