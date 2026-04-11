@@ -26,6 +26,7 @@
 		5B90B8D52A8E7A2F00185EAA /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B90B8D42A8E7A2F00185EAA /* LoginView.swift */; };
 		5BC7F4812C17EA42002A37C2 /* UpdateButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BC7F4802C17EA42002A37C2 /* UpdateButton.swift */; };
 		5BD50E852C14BBFE004D4A7E /* HideAdsToggle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BD50E842C14BBFE004D4A7E /* HideAdsToggle.swift */; };
+		C8296B1C2F8A811D00AF6E99 /* XDeck.icon in Resources */ = {isa = PBXBuildFile; fileRef = C8296B1B2F8A811D00AF6E99 /* XDeck.icon */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -50,6 +51,7 @@
 		5B90B8D42A8E7A2F00185EAA /* LoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
 		5BC7F4802C17EA42002A37C2 /* UpdateButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpdateButton.swift; sourceTree = "<group>"; };
 		5BD50E842C14BBFE004D4A7E /* HideAdsToggle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HideAdsToggle.swift; sourceTree = "<group>"; };
+		C8296B1B2F8A811D00AF6E99 /* XDeck.icon */ = {isa = PBXFileReference; lastKnownFileType = folder.iconcomposer.icon; path = XDeck.icon; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -125,6 +127,7 @@
 				5B5F42262AAAB04F0031658B /* Config */,
 				5B56853A2A93058500298476 /* Color+Hex.swift */,
 				5B90B8C62A8E6D7400185EAA /* Assets.xcassets */,
+				C8296B1B2F8A811D00AF6E99 /* XDeck.icon */,
 				5B90B8CB2A8E6D7400185EAA /* XDeck.entitlements */,
 				5B90B8C82A8E6D7400185EAA /* Preview Content */,
 			);
@@ -205,6 +208,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				5B5F422A2AAAB0870031658B /* schema.json in Resources */,
+				C8296B1C2F8A811D00AF6E99 /* XDeck.icon in Resources */,
 				5B5F42282AAAB0700031658B /* settings.json in Resources */,
 				5B90B8CA2A8E6D7400185EAA /* Preview Assets.xcassets in Resources */,
 				5B90B8C72A8E6D7400185EAA /* Assets.xcassets in Resources */,
@@ -363,8 +367,9 @@
 		5B90B8CF2A8E6D7400185EAA /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_APPICON_NAME = XDeck;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
 				CODE_SIGN_ENTITLEMENTS = XDeck/XDeck.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
@@ -391,8 +396,9 @@
 		5B90B8D02A8E6D7400185EAA /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_APPICON_NAME = XDeck;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
 				CODE_SIGN_ENTITLEMENTS = XDeck/XDeck.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;

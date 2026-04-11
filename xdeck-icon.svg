@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200">
+  <!-- Dark rounded square background -->
+  <rect width="200" height="200" rx="44" fill="#1c1c1e"/>
+
+  <g fill="white">
+    <!-- Diagonal arm: upper-right to lower-left strip -->
+    <polygon points="158,32 170,44 42,178 30,166"/>
+
+    <!-- Lower-right arm: center crossing to lower-right -->
+    <polygon points="106,94 170,166 158,180 92,110"/>
+
+    <!--
+      Bird wing: replaces the upper-left arm of the X.
+      Traces clockwise — leading edge with 3 feather-tip bumps,
+      then the trailing edge sweeps back to center.
+    -->
+    <path d="
+      M 106,94
+      C 102,78 96,66 90,54
+      C 88,48 85,40 82,36
+      C 79,32 73,46 68,50
+      C 63,54 59,34 55,28
+      C 51,22 44,40 40,46
+      C 36,52 28,40 24,38
+      C 20,36 20,52 26,60
+      C 32,68 46,76 60,84
+      C 70,90 84,98 92,110
+      Z
+    "/>
+  </g>
+</svg>
