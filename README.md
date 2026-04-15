@@ -10,6 +10,14 @@ An 𝕏 client app for macOS as a TweetDeck alternative (with Ad-Blocking).
 
 ![スクリーンショット 2024-06-14 0 25 40](https://github.com/morishin/XDeck/assets/1413408/855cbc09-8b2e-4f68-8f7d-1952f3daf060)
 
+## Installation
+
+Download from [Releases](https://github.com/morishin/XDeck/releases/latest), or install via [Homebrew](https://brew.sh/):
+
+```sh
+brew install --cask xdeck
+```
+
 ## Configuration
 
 `⌘,` and edit `settings.json`.
