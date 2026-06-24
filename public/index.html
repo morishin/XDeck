@@ -94,8 +94,23 @@
       <span>Download</span>
       <span class="arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m13 6 6 6-6 6"/></svg></span>
     </a>
+    <span class="brew-label">or</span>
+    <div class="brew-install">
+      <code>brew install --cask xdeck</code>
+      <button class="brew-copy" onclick="copyBrew(this)" aria-label="Copy to clipboard">
+        <svg class="icon-copy" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+        <svg class="icon-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+      </button>
+    </div>
   </div>
 </main>
+<script>
+function copyBrew(btn) {
+  navigator.clipboard.writeText('brew install --cask xdeck');
+  btn.classList.add('copied');
+  setTimeout(() => btn.classList.remove('copied'), 2000);
+}
+</script>
 
 <section class="showcase rise rise-5">
   <div class="showcase-frame">

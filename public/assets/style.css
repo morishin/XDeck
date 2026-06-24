@@ -284,6 +284,48 @@ a { color: inherit; text-decoration: none; }
   }
 }
 
+.brew-label {
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  color: var(--ink-faint);
+}
+.brew-install {
+  display: inline-flex;
+  align-items: center;
+  gap: 0;
+  border-radius: 10px;
+  background: var(--bg-soft);
+  border: 1px solid var(--line);
+  overflow: hidden;
+}
+.brew-install code {
+  font-family: var(--mono);
+  font-size: 0.82rem;
+  padding: 10px 14px;
+  color: var(--ink-soft);
+  letter-spacing: 0.02em;
+  user-select: all;
+}
+.brew-copy {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  align-self: stretch;
+  width: 40px;
+  border: none;
+  border-left: 1px solid var(--line);
+  background: transparent;
+  color: var(--ink-faint);
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+}
+.brew-copy:hover { background: var(--rule); color: var(--ink-soft); }
+.brew-copy svg { width: 14px; height: 14px; display: block; }
+.brew-copy .icon-check { display: none; }
+.brew-copy.copied .icon-copy { display: none; }
+.brew-copy.copied .icon-check { display: block; color: #4caf50; }
+
 .cta-meta {
   font-family: var(--mono);
   font-size: 0.7rem;
