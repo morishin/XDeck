@@ -11,6 +11,7 @@ struct WebViewConfigurations {
         case clickFollowingTab
         case hideSideHeader
         case hideAds
+        case hideUnverifiedReplies
         case detectMediaOverlay(columnIndex: Int)
 
         var scriptContent: String {
@@ -23,13 +24,14 @@ struct WebViewConfigurations {
             case .clickFollowingTab: return WebViewConfigurations.clickFollowingTab
             case .hideSideHeader: return WebViewConfigurations.hideSideHeader
             case .hideAds: return WebViewConfigurations.hideAds
+            case .hideUnverifiedReplies: return WebViewConfigurations.hideUnverifiedReplies
             case .detectMediaOverlay(let columnIndex): return WebViewConfigurations.detectMediaOverlay(columnIndex: columnIndex)
             }
         }
 
         var runAfterLoad: Bool {
             switch self {
-            case .findUserName, .findThemeColor, .clickForYouTab, .clickFollowingTab, .hideSideHeader, .hidePostArea, .hideAds:
+            case .findUserName, .findThemeColor, .clickForYouTab, .clickFollowingTab, .hideSideHeader, .hidePostArea, .hideAds, .hideUnverifiedReplies:
                 return true
             case .global, .detectMediaOverlay:
                 return false
@@ -120,13 +122,13 @@ struct WebViewConfigurations {
         """
 
     private static let clickForYouTab: String = """
-        waitForElement("a[href='/home'][role='tab']", 0, (element) => {
+        waitForElement("main [role='tablist'] [role='tab']", 0, (element) => {
             element.click();
         });
         """
 
     private static let clickFollowingTab: String = """
-        waitForElement("a[href='/home'][role='tab']", 1, (element) => {
+        waitForElement("main [role='tablist'] [role='tab']", 1, (element) => {
             element.click();
         });
         """
@@ -148,8 +150,17 @@ struct WebViewConfigurations {
 
     private static let waitForElement: String = """
         function waitForElement(selector, index, callback, once=true) {
+            const findElement = () => document.querySelectorAll(selector)[index];
+            const existingElement = findElement();
+            if (existingElement) {
+                callback(existingElement);
+                if (once) {
+                    return;
+                }
+            }
+
             const observer = new MutationObserver((mutationsList, observer) => {
-                const element = document.querySelectorAll(selector)[index];
+                const element = findElement();
                 if (element) {
                     callback(element);
                     if (once) {
@@ -222,6 +233,108 @@ struct WebViewConfigurations {
         })();
     """
 
+    static let hideUnverifiedReplies: String = """
+        (() => {
+          const hiddenReplyAttribute = "data-xdeck-unverified-reply";
+          const statusPathPattern = /^\\/[^/]+\\/status\\/(\\d+)/;
+
+          function restoreUnverifiedReplies() {
+            document.querySelectorAll(`[${hiddenReplyAttribute}]`).forEach((cell) => {
+              cell.removeAttribute(hiddenReplyAttribute);
+            });
+          }
+
+          function isBlueVerified(article) {
+            const author = article.querySelector('div[data-testid="User-Name"]');
+            if (!author) {
+              return false;
+            }
+            const badges = author.querySelectorAll(
+              'svg[data-testid="icon-verified"], svg[aria-label="Verified account"]'
+            );
+            return Array.from(badges).some((badge) => {
+              let element = badge;
+              for (let depth = 0; element && depth < 4; depth += 1, element = element.parentElement) {
+                const color = getComputedStyle(element).color.replace(/\\s/g, "");
+                if (color === "rgb(29,155,240)") {
+                  return true;
+                }
+              }
+              return false;
+            });
+          }
+
+          function statusIdForArticle(article) {
+            const timestamp = article.querySelector("time");
+            const permalink = timestamp && timestamp.closest('a[href*="/status/"]');
+            const match = permalink && new URL(permalink.href, location.origin).pathname.match(statusPathPattern);
+            return match ? match[1] : null;
+          }
+
+          function filterUnverifiedReplies() {
+            const pageMatch = location.pathname.match(statusPathPattern);
+            if (!pageMatch) {
+              restoreUnverifiedReplies();
+              return;
+            }
+
+            const mainStatusId = pageMatch[1];
+            document.querySelectorAll('div[data-testid="cellInnerDiv"]').forEach((cell) => {
+              const article = cell.querySelector('article[data-testid="tweet"]');
+              if (!article) {
+                return;
+              }
+
+              const statusId = statusIdForArticle(article);
+              if (!statusId) {
+                return;
+              }
+              const isMainPost = statusId === mainStatusId;
+              if (!isMainPost && !isBlueVerified(article)) {
+                cell.setAttribute(hiddenReplyAttribute, "true");
+              } else {
+                cell.removeAttribute(hiddenReplyAttribute);
+              }
+            });
+          }
+
+          if (!document.getElementById("xdeck-verified-replies-style")) {
+            const style = document.createElement("style");
+            style.id = "xdeck-verified-replies-style";
+            style.textContent = `[${hiddenReplyAttribute}] { display: none !important; }`;
+            document.head.appendChild(style);
+          }
+
+          if (window.xdeckVerifiedRepliesObserver) {
+            window.xdeckVerifiedRepliesObserver.disconnect();
+          }
+          let filterTimer;
+          window.xdeckVerifiedRepliesObserver = new MutationObserver(() => {
+            clearTimeout(filterTimer);
+            filterTimer = setTimeout(filterUnverifiedReplies, 100);
+          });
+          window.xdeckVerifiedRepliesObserver.observe(document.body, {
+            childList: true,
+            subtree: true,
+          });
+
+          window.xdeckFilterUnverifiedReplies = filterUnverifiedReplies;
+          filterUnverifiedReplies();
+        })();
+    """
+
+    static let showUnverifiedReplies: String = """
+        (() => {
+          if (window.xdeckVerifiedRepliesObserver) {
+            window.xdeckVerifiedRepliesObserver.disconnect();
+            window.xdeckVerifiedRepliesObserver = null;
+          }
+          document.querySelectorAll('[data-xdeck-unverified-reply]').forEach((cell) => {
+            cell.removeAttribute('data-xdeck-unverified-reply');
+          });
+        })();
+    """
+
     private static func detectMediaOverlay(columnIndex: Int) -> String {
         return """
             (function() {
@@ -248,4 +361,3 @@ struct WebViewConfigurations {
         """
     }
 }
-

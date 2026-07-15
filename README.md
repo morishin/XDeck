@@ -27,6 +27,7 @@ Example
 ```json
 {
   "$schema": "./schema.json",
+  "autoColumnWidth": true,
   "columnWidth": 450,
   "columns": [
     {
@@ -48,3 +49,5 @@ Example
   ]
 }
 ```
+
+`autoColumnWidth` 设为 `true` 时，XDeck 会根据窗口当前宽度和配置的列数自动平均分配列宽，使所有列铺满窗口。设为 `false` 时使用 `columnWidth` 指定的固定列宽。

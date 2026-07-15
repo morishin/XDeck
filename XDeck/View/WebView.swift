@@ -14,6 +14,7 @@ struct WebView: NSViewRepresentable {
     @AppStorage("pageZoom") var pageZoom: Double = 1
 
     var refreshSwitch: Bool = false
+    var showVerifiedRepliesOnly: Bool = false
     var configuration: WKWebViewConfiguration? = nil
 
     func makeNSView(context: Context) -> WKWebView {
@@ -51,6 +52,14 @@ struct WebView: NSViewRepresentable {
         if webView.pageZoom != pageZoom {
             webView.pageZoom = CGFloat(pageZoom)
         }
+        if context.coordinator.showVerifiedRepliesOnly != showVerifiedRepliesOnly {
+            webView.evaluateJavaScript(
+                showVerifiedRepliesOnly
+                    ? WebViewConfigurations.hideUnverifiedReplies
+                    : WebViewConfigurations.showUnverifiedReplies
+            )
+            context.coordinator.showVerifiedRepliesOnly = showVerifiedRepliesOnly
+        }
     }
 
     func makeCoordinator() -> Coordinator {
@@ -62,11 +71,13 @@ class Coordinator: NSObject, WKNavigationDelegate, WKUIDelegate, WKScriptMessage
     private let owner: WebView
     var lastUrl: URL
     var refreshSwitch: Bool
+    var showVerifiedRepliesOnly: Bool
 
     init(owner: WebView) {
         self.owner = owner
         self.lastUrl = owner.url
         self.refreshSwitch = false
+        self.showVerifiedRepliesOnly = owner.showVerifiedRepliesOnly
         super.init()
         owner.configuration?.userContentController.add(self, name: WebViewConfigurations.handlerName)
     }
