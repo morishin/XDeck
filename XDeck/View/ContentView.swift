@@ -7,6 +7,7 @@ struct ContentView: View {
     @AppStorage("pageZoom") var pageZoom: Double = 1
     @AppStorage("isDarkMode") var isDarkMode: Bool = false
     @AppStorage("hideAds") var hideAds: Bool = false
+    @AppStorage("showVerifiedRepliesOnly") var showVerifiedRepliesOnly: Bool = false
 
     @State var isLoading: Bool = false
     @State var isShowingAlert: Bool = false
@@ -66,6 +67,9 @@ struct ContentView: View {
             if hideAds {
                 scripts.append(.hideAds)
             }
+            if showVerifiedRepliesOnly && column.isXColumn {
+                scripts.append(.hideUnverifiedReplies)
+            }
             return scripts
         }()
 
@@ -76,6 +80,7 @@ struct ContentView: View {
                 messageFromWebView: $webViewMessage,
                 scriptExecutionRequest: $scriptExecutionRequest,
                 refreshSwitch: refreshSwitch,
+                showVerifiedRepliesOnly: showVerifiedRepliesOnly && column.isXColumn,
                 configuration: WebViewConfigurations.makeConfiguration(
                     onLoadScripts: baseConfiguration + [.clickForYouTab])
             ).frame(width: width)
@@ -85,6 +90,7 @@ struct ContentView: View {
                 messageFromWebView: $webViewMessage,
                 scriptExecutionRequest: $scriptExecutionRequest,
                 refreshSwitch: refreshSwitch,
+                showVerifiedRepliesOnly: showVerifiedRepliesOnly && column.isXColumn,
                 configuration: WebViewConfigurations.makeConfiguration(
                     onLoadScripts: baseConfiguration + [.clickFollowingTab])
             ).frame(width: width)
@@ -95,6 +101,7 @@ struct ContentView: View {
                 messageFromWebView: $webViewMessage,
                 scriptExecutionRequest: $scriptExecutionRequest,
                 refreshSwitch: refreshSwitch,
+                showVerifiedRepliesOnly: showVerifiedRepliesOnly && column.isXColumn,
                 configuration: WebViewConfigurations.makeConfiguration(
                     onLoadScripts: baseConfiguration)
             ).frame(width: width)
@@ -106,6 +113,7 @@ struct ContentView: View {
                     scriptExecutionRequest: column.isXColumn
                         ? $scriptExecutionRequest : .constant(nil),
                     refreshSwitch: refreshSwitch,
+                    showVerifiedRepliesOnly: showVerifiedRepliesOnly && column.isXColumn,
                     configuration: WebViewConfigurations.makeConfiguration(
                         onLoadScripts: baseConfiguration)
                 ).frame(width: width)
@@ -117,6 +125,7 @@ struct ContentView: View {
                     messageFromWebView: $webViewMessage,
                     scriptExecutionRequest: $scriptExecutionRequest,
                     refreshSwitch: refreshSwitch,
+                    showVerifiedRepliesOnly: showVerifiedRepliesOnly && column.isXColumn,
                     configuration: WebViewConfigurations.makeConfiguration(
                         onLoadScripts: baseConfiguration)
                 ).frame(width: width)
@@ -131,28 +140,22 @@ struct ContentView: View {
 
     var body: some View {
         GeometryReader { geometry in
-                    // Determine the number of columns from the appConfig.
                     let columnCount = appConfig.columns.count
-
-                    // If a manual width is provided in the app config, use it;
-                    // otherwise compute the base width dynamically.
-                    let manualWidth = appConfig.columnWidth.map(CGFloat.init)
-                    let baseWidth: CGFloat = {
-                        if let manualWidth = manualWidth {
-                            return manualWidth
-                        } else {
-                            // For one column, reserve space for the side header.
-                            if columnCount == 1 {
-                                return geometry.size.width - Self.sideHeaderWidth
-                            } else {
-                                // With multiple columns, subtract the side header width from the total available width.
-                                return (geometry.size.width - Self.sideHeaderWidth) / CGFloat(columnCount)
-                            }
-                        }
-                    }()
-
-                    // Apply the zoom factor.
-                    let dynamicColumnWidth = baseWidth * CGFloat(pageZoom)
+                    let usesAutomaticColumnWidth = appConfig.autoColumnWidth == true
+                        || appConfig.columnWidth == nil
+                    let reservedSideHeaderWidth = appConfig.columns.contains { $0.isXColumn }
+                        ? Self.sideHeaderWidth : 0
+                    let availableColumnWidth = max(
+                        geometry.size.width - reservedSideHeaderWidth,
+                        0
+                    )
+                    let automaticColumnWidth = columnCount > 0
+                        ? availableColumnWidth / CGFloat(columnCount) : 0
+                    let configuredColumnWidth = appConfig.columnWidth.map(CGFloat.init)
+                        ?? automaticColumnWidth
+                    let dynamicColumnWidth = usesAutomaticColumnWidth
+                        ? automaticColumnWidth
+                        : configuredColumnWidth * CGFloat(pageZoom)
 
                     ZStack {
                         // Update zoom buttons to change only the zoom factor.
@@ -251,6 +254,10 @@ struct ContentView: View {
                                                 ? WebViewConfigurations.hideAds
                                                 : WebViewConfigurations.showAds
                                         }
+                                    HideAdsToggle(isOn: $showVerifiedRepliesOnly) {
+                                        Text("Blue Verified Replies Only")
+                                    }
+                                    .help("Only filters replies on post detail pages")
                                     Button {
                                         openURL(URL(string: "https://github.com/sponsors/morishin?frequency=one-time")!)
                                     } label: {

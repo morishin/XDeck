@@ -5,8 +5,14 @@
     "$schema": {
       "type": "string"
     },
+    "autoColumnWidth": {
+      "type": "boolean",
+      "description": "是否根据窗口宽度和列数自动平均分配列宽"
+    },
     "columnWidth": {
-      "type": "integer"
+      "type": "integer",
+      "exclusiveMinimum": 0,
+      "description": "关闭自动列宽时使用的固定列宽"
     },
     "columns": {
       "type": "array",

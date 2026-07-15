@@ -1,5 +1,6 @@
 {
   "$schema": "./schema.json",
+  "autoColumnWidth": true,
   "columnWidth": 380,
   "columns": [
     {
