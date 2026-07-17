@@ -6,6 +6,10 @@ enum AppConfigError: Error {
 }
 
 struct AppConfig: Decodable {
+    static let sideHeaderWidth: CGFloat = 68
+    static let defaultWindowWidth: CGFloat = 1280
+    static let defaultWindowHeight: CGFloat = 900
+
     var columnWidth: Int?
     var columns: [Column]
 

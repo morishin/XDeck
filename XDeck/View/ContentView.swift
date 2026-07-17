@@ -1,6 +1,50 @@
 import SwiftUI
 import WebKit
 
+private struct ContentWidthPreferenceKey: PreferenceKey {
+    static var defaultValue: CGFloat = 0
+    static func reduce(value: inout CGFloat, nextValue: () -> CGFloat) {
+        value = max(value, nextValue())
+    }
+}
+
+/// Resizes the window's width to match the actual rendered content width: once automatically,
+/// the first time it's known, and again whenever `fitRequestToken` changes (the user pressing
+/// ⌘F). The exact fit can't be computed in advance from config alone (WebView/scrollbar
+/// rendering introduces small, hard-to-predict width differences), so this measures the real
+/// layout instead.
+private struct WindowWidthFitter: NSViewRepresentable {
+    let contentWidth: CGFloat
+    @Binding var hasFit: Bool
+    let fitRequestToken: Int
+
+    func makeNSView(context: Context) -> NSView {
+        NSView(frame: .zero)
+    }
+
+    func updateNSView(_ nsView: NSView, context: Context) {
+        guard contentWidth > 0, let window = nsView.window else { return }
+        let isManualRequest = fitRequestToken != context.coordinator.lastHandledFitRequestToken
+        guard !hasFit || isManualRequest else { return }
+        context.coordinator.lastHandledFitRequestToken = fitRequestToken
+
+        let maxWidth = (window.screen ?? NSScreen.main)?.visibleFrame.width ?? contentWidth
+        let targetWidth = min(contentWidth, maxWidth)
+        DispatchQueue.main.async {
+            var frame = window.frame
+            frame.size.width = targetWidth
+            window.setFrame(frame, display: true)
+            hasFit = true
+        }
+    }
+
+    func makeCoordinator() -> Coordinator { Coordinator() }
+
+    class Coordinator {
+        var lastHandledFitRequestToken = 0
+    }
+}
+
 struct ContentView: View {
     var appConfig: AppConfig
 
@@ -21,13 +65,17 @@ struct ContentView: View {
     @State var loginViewMessage: String? = nil
     @State var expandedColumnIndex: Int? = nil
 
+    @State var measuredContentWidth: CGFloat = 0
+    @State var hasFitWindowToContent = false
+    @State var fitWindowRequestToken = 0
+
     @State var homeUrl: URL = URL(string: "https://x.com/home")!
     @State var notificationsUrl: URL = URL(string: "https://x.com/notifications")!
     @State var profileUrl: URL? = nil
 
     @Environment(\.openURL) private var openURL
 
-    private static let sideHeaderWidth: CGFloat = 68
+    private static let sideHeaderWidth: CGFloat = AppConfig.sideHeaderWidth
     private static func defaultBackgroundColor(isDarkMode: Bool) -> Color {
         isDarkMode ? Color(hex: "#17202A") : Color(hex: "#FFFFFF")
     }
@@ -47,6 +95,11 @@ struct ContentView: View {
     init(appConfig: AppConfig) {
         self.appConfig = appConfig
     }
+
+    // When columnWidth isn't set, column width is derived from the window's own width
+    // (see `baseWidth` below), so fitting the window to the column width would be circular.
+    // The fit-to-content feature only makes sense when columnWidth is explicitly configured.
+    private var isWindowFittingEnabled: Bool { appConfig.columnWidth != nil }
 
     @ViewBuilder
     private func makeColumn(
@@ -174,6 +227,14 @@ struct ContentView: View {
                         .keyboardShortcut("r")
                         .opacity(0)
 
+                        if isWindowFittingEnabled {
+                            Button("f") {
+                                fitWindowRequestToken += 1
+                            }
+                            .keyboardShortcut("f")
+                            .opacity(0)
+                        }
+
                         Button(",") {
                             isShowConfirmOpenPreference = true
                         }
@@ -219,6 +280,15 @@ struct ContentView: View {
                                                     columnWidth: isHidden ? 0 : effectiveWidth
                                                 )
                                                 .opacity(isHidden ? 0 : 1)
+                                            }
+                                        }
+                                    }
+                                    // Measured here so the window fits the columns themselves.
+                                    .background {
+                                        if isWindowFittingEnabled {
+                                            GeometryReader { contentGeometry in
+                                                Color.clear.preference(
+                                                    key: ContentWidthPreferenceKey.self, value: contentGeometry.size.width)
                                             }
                                         }
                                     }
@@ -284,6 +354,10 @@ struct ContentView: View {
                                             .foregroundColor(Self.textColor(for: backgroundColor))
                                         Text("⌘R Refresh")
                                             .foregroundColor(Self.textColor(for: backgroundColor))
+                                        if isWindowFittingEnabled {
+                                            Text("⌘F Fit Window")
+                                                .foregroundColor(Self.textColor(for: backgroundColor))
+                                        }
                                         Text("⌘, Settings")
                                             .foregroundColor(Self.textColor(for: backgroundColor))
                                         Spacer()
@@ -313,6 +387,14 @@ struct ContentView: View {
 
                     }
                     .background(backgroundColor)
+                    .background {
+                        if isWindowFittingEnabled {
+                            WindowWidthFitter(
+                                contentWidth: measuredContentWidth, hasFit: $hasFitWindowToContent,
+                                fitRequestToken: fitWindowRequestToken)
+                        }
+                    }
+                    .onPreferenceChange(ContentWidthPreferenceKey.self) { measuredContentWidth = $0 }
                     .colorScheme(isDarkMode ? .dark : .light)
                     // The onChange modifiers for loginViewMessage, webViewMessage, and alertMessage remain unchanged.
                     .onChange(of: loginViewMessage) { loginViewMessage in
