@@ -12,7 +12,7 @@ struct ContentView: View {
     @State var isShowingAlert: Bool = false
     @State var alertMessage: String? = nil
     @State var backgroundColor: Color = .white
-    
+
     @State var refreshSwitch: Bool = false
     @State var scriptExecutionRequest: String? = nil
     @State var isShowConfirmOpenPreference: Bool = false
@@ -196,41 +196,81 @@ struct ContentView: View {
                         }
 
                         if profileUrl != nil {
-                            ScrollView(.horizontal) {
-                                VStack(alignment: .leading, spacing: 0) {
-                                    HStack(spacing: 0) {
-                                        ForEach(appConfig.columns.indices, id: \.self) { index in
-                                            let isLeftMostXColumn =
-                                                index == (appConfig.columns.firstIndex { $0.isXColumn } ?? -1)
-                                            let isExpanded = expandedColumnIndex == index
-                                            let isHidden = expandedColumnIndex != nil && !isExpanded
-                                            let effectiveWidth: CGFloat = isExpanded
-                                                ? (isLeftMostXColumn ? geometry.size.width - Self.sideHeaderWidth : geometry.size.width)
-                                                : dynamicColumnWidth
-                                            makeColumn(
-                                                column: appConfig.columns[index],
-                                                columnIndex: index,
-                                                isLeftMostXColumn: isLeftMostXColumn,
-                                                profileUrl: $profileUrl,
-                                                columnWidth: isHidden ? 0 : effectiveWidth
-                                            )
-                                            .opacity(isHidden ? 0 : 1)
+                            VStack(alignment: .leading, spacing: 0) {
+                                // Its own ScrollView, separate from the bottom toolbar below: the toolbar's
+                                // natural width can be wider than a narrow column configuration, and scrolling
+                                // to see the rest of it shouldn't also scroll the columns out of view.
+                                ScrollView(.horizontal) {
+                                    VStack(alignment: .leading, spacing: 0) {
+                                        HStack(spacing: 0) {
+                                            ForEach(appConfig.columns.indices, id: \.self) { index in
+                                                let isLeftMostXColumn =
+                                                    index == (appConfig.columns.firstIndex { $0.isXColumn } ?? -1)
+                                                let isExpanded = expandedColumnIndex == index
+                                                let isHidden = expandedColumnIndex != nil && !isExpanded
+                                                let effectiveWidth: CGFloat = isExpanded
+                                                    ? (isLeftMostXColumn ? geometry.size.width - Self.sideHeaderWidth : geometry.size.width)
+                                                    : dynamicColumnWidth
+                                                makeColumn(
+                                                    column: appConfig.columns[index],
+                                                    columnIndex: index,
+                                                    isLeftMostXColumn: isLeftMostXColumn,
+                                                    profileUrl: $profileUrl,
+                                                    columnWidth: isHidden ? 0 : effectiveWidth
+                                                )
+                                                .opacity(isHidden ? 0 : 1)
+                                            }
                                         }
                                     }
+                                    .frame(minWidth: geometry.size.width, alignment: .leading)
                                 }
                                 .alert(isPresented: $isShowingAlert) {
                                     Alert(title: Text(alertMessage ?? ""))
                                 }
-                                HStack(spacing: 24) {
-                                    HStack(spacing: 8) {
-                                        Button {
-                                            openURL(URL(string: "https://github.com/morishin/XDeck")!)
-                                        } label: {
-                                            GitHubIcon()
-                                                .foregroundColor(Self.textColor(for: backgroundColor))
-                                                .frame(width: 20, height: 20)
+
+                                ScrollView(.horizontal) {
+                                    HStack(spacing: 24) {
+                                        HStack(spacing: 8) {
+                                            Button {
+                                                openURL(URL(string: "https://github.com/morishin/XDeck")!)
+                                            } label: {
+                                                GitHubIcon()
+                                                    .foregroundColor(Self.textColor(for: backgroundColor))
+                                                    .frame(width: 20, height: 20)
+                                            }
+                                            .buttonStyle(.plain)
+                                            .onHover { inside in
+                                                if inside {
+                                                    NSCursor.pointingHand.push()
+                                                } else {
+                                                    NSCursor.pop()
+                                                }
+                                            }
+                                            UpdateButton()
                                         }
-                                        .buttonStyle(.plain)
+                                        AppearanceToggle(isOn: $isDarkMode) { }
+                                            .onChange(of: isDarkMode) { newValue in
+                                                scriptExecutionRequest = Self.setNightModeCookieScript(isDarkMode: isDarkMode)
+                                                backgroundColor = Self.defaultBackgroundColor(isDarkMode: isDarkMode)
+                                            }
+                                        HideAdsToggle(isOn: $hideAds) { Text("Hide Ads") }
+                                            .onChange(of: hideAds) { newValue in
+                                                scriptExecutionRequest = newValue
+                                                    ? WebViewConfigurations.hideAds
+                                                    : WebViewConfigurations.showAds
+                                            }
+                                        Button {
+                                            openURL(URL(string: "https://github.com/sponsors/morishin?frequency=one-time")!)
+                                        } label: {
+                                            Label {
+                                                Text("Buy me a coffee")
+                                                    .foregroundStyle(Color(nsColor: .textColor))
+                                            } icon: {
+                                                Image(systemName: "cup.and.saucer.fill")
+                                                    .frame(width: 16, height: 16)
+                                            }
+                                        }
+                                        .buttonStyle(.bordered)
                                         .onHover { inside in
                                             if inside {
                                                 NSCursor.pointingHand.push()
@@ -238,56 +278,30 @@ struct ContentView: View {
                                                 NSCursor.pop()
                                             }
                                         }
-                                        UpdateButton()
+                                        Text("⌘+ Zoom In")
+                                            .foregroundColor(Self.textColor(for: backgroundColor))
+                                        Text("⌘- Zoom out")
+                                            .foregroundColor(Self.textColor(for: backgroundColor))
+                                        Text("⌘R Refresh")
+                                            .foregroundColor(Self.textColor(for: backgroundColor))
+                                        Text("⌘, Settings")
+                                            .foregroundColor(Self.textColor(for: backgroundColor))
+                                        Spacer()
                                     }
-                                    AppearanceToggle(isOn: $isDarkMode) { }
-                                        .onChange(of: isDarkMode) { newValue in
-                                            scriptExecutionRequest = Self.setNightModeCookieScript(isDarkMode: isDarkMode)
-                                            backgroundColor = Self.defaultBackgroundColor(isDarkMode: isDarkMode)
-                                        }
-                                    HideAdsToggle(isOn: $hideAds) { Text("Hide Ads") }
-                                        .onChange(of: hideAds) { newValue in
-                                            scriptExecutionRequest = newValue
-                                                ? WebViewConfigurations.hideAds
-                                                : WebViewConfigurations.showAds
-                                        }
-                                    Button {
-                                        openURL(URL(string: "https://github.com/sponsors/morishin?frequency=one-time")!)
-                                    } label: {
-                                        Label {
-                                            Text("Buy me a coffee")
-                                                .foregroundStyle(Color(nsColor: .textColor))
-                                        } icon: {
-                                            Image(systemName: "cup.and.saucer.fill")
-                                                .frame(width: 16, height: 16)
-                                        }
-                                    }
-                                    .buttonStyle(.bordered)
-                                    .onHover { inside in
-                                        if inside {
-                                            NSCursor.pointingHand.push()
-                                        } else {
-                                            NSCursor.pop()
-                                        }
-                                    }
-                                    Text("⌘+ Zoom In")
-                                        .foregroundColor(Self.textColor(for: backgroundColor))
-                                    Text("⌘- Zoom out")
-                                        .foregroundColor(Self.textColor(for: backgroundColor))
-                                    Text("⌘R Refresh")
-                                        .foregroundColor(Self.textColor(for: backgroundColor))
-                                    Text("⌘, Settings")
-                                        .foregroundColor(Self.textColor(for: backgroundColor))
-                                    Spacer()
+                                    // Without this, the trailing Spacer expands to fill whatever width the
+                                    // enclosing ScrollView proposes, making this row's measured width track the
+                                    // window's current width instead of its own natural content width.
+                                    .fixedSize(horizontal: true, vertical: false)
+                                    .foregroundColor(Self.textColor(for: backgroundColor))
+                                    .padding()
+                                    .overlay(
+                                        Rectangle()
+                                            .frame(height: 1, alignment: .top)
+                                            .foregroundColor(Self.borderColor(for: backgroundColor)),
+                                        alignment: .top
+                                    )
+                                    .frame(minWidth: geometry.size.width, alignment: .leading)
                                 }
-                                .foregroundColor(Self.textColor(for: backgroundColor))
-                                .padding()
-                                .overlay(
-                                    Rectangle()
-                                        .frame(height: 1, alignment: .top)
-                                        .foregroundColor(Self.borderColor(for: backgroundColor)),
-                                    alignment: .top
-                                )
                             }
                         } else {
                             LoginView(
