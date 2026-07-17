@@ -13,7 +13,7 @@ struct LoginView: View {
             WebView(
                 isLoading: $isLoading, url: $url, alertMessage: $alertMessage,
                 messageFromWebView: $loginViewMessage,
-                scriptExecutionRequest: $scriptExecutionRequest,
+                scriptExecutionRequest: scriptExecutionRequest,
                 configuration: WebViewConfigurations.makeConfiguration(onLoadScripts: [.findUserName, .findThemeColor]))
         }
         .padding()

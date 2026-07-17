@@ -18,6 +18,8 @@ struct AppearanceToggle<Content: View>: View {
 }
 
 struct AppearanceToggleStyle: ToggleStyle {
+    @Environment(\.isEnabled) private var isEnabled
+
     func makeBody(configuration: Configuration) -> some View {
         HStack {
             configuration.label
@@ -46,14 +48,16 @@ struct AppearanceToggleStyle: ToggleStyle {
                 .foregroundColor(
                     configuration.isOn ? Color(hex: "#606D7C") : Color(hex: "#BCC9D2")
                 )
+                .opacity(isEnabled ? 1 : 0.5)
                 .onHover { inside in
-                    if inside {
+                    if isEnabled && inside {
                         NSCursor.pointingHand.push()
                     } else {
                         NSCursor.pop()
                     }
                 }
                 .onTapGesture(perform: {
+                    guard isEnabled else { return }
                     configuration.isOn.toggle()
                 })
 
