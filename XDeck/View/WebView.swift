@@ -9,10 +9,11 @@ struct WebView: NSViewRepresentable {
     @Binding var url: URL
     @Binding var alertMessage: String?
     @Binding var messageFromWebView: String?
-    @Binding var scriptExecutionRequest: String?
+    var scriptExecutionRequest: String? = nil
 
     @AppStorage("pageZoom") var pageZoom: Double = 1
 
+    var scriptExecutionToken: Int = 0
     var refreshSwitch: Bool = false
     var configuration: WKWebViewConfiguration? = nil
 
@@ -42,11 +43,9 @@ struct WebView: NSViewRepresentable {
             let request = URLRequest(url: url)
             webView.load(request)
             context.coordinator.refreshSwitch = refreshSwitch
-        } else if let script = scriptExecutionRequest {
+        } else if let script = scriptExecutionRequest, scriptExecutionToken != context.coordinator.lastHandledScriptToken {
             webView.evaluateJavaScript(script)
-            DispatchQueue.main.async {
-                self.scriptExecutionRequest = nil
-            }
+            context.coordinator.lastHandledScriptToken = scriptExecutionToken
         }
         if webView.pageZoom != pageZoom {
             webView.pageZoom = CGFloat(pageZoom)
@@ -62,11 +61,13 @@ class Coordinator: NSObject, WKNavigationDelegate, WKUIDelegate, WKScriptMessage
     private let owner: WebView
     var lastUrl: URL
     var refreshSwitch: Bool
+    var lastHandledScriptToken: Int
 
     init(owner: WebView) {
         self.owner = owner
         self.lastUrl = owner.url
         self.refreshSwitch = false
+        self.lastHandledScriptToken = owner.scriptExecutionToken
         super.init()
         owner.configuration?.userContentController.add(self, name: WebViewConfigurations.handlerName)
     }
@@ -77,10 +78,6 @@ class Coordinator: NSObject, WKNavigationDelegate, WKUIDelegate, WKScriptMessage
     }
     func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
         owner.isLoading = false
-        if let script = owner.scriptExecutionRequest {
-            webView.evaluateJavaScript(script)
-            owner.scriptExecutionRequest = nil
-        }
     }
     func webView(_ webView: WKWebView, decidePolicyFor navigationAction: WKNavigationAction, decisionHandler: @escaping (WKNavigationActionPolicy) -> Void) {
         if case .linkActivated = navigationAction.navigationType, let url = navigationAction.request.url {

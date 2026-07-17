@@ -59,6 +59,8 @@ struct ContentView: View {
 
     @State var refreshSwitch: Bool = false
     @State var scriptExecutionRequest: String? = nil
+    @State var scriptExecutionToken: Int = 0
+    @State var isDarkModeUpdating: Bool = false
     @State var isShowConfirmOpenPreference: Bool = false
 
     @State var webViewMessage: String? = nil
@@ -76,6 +78,9 @@ struct ContentView: View {
     @Environment(\.openURL) private var openURL
 
     private static let sideHeaderWidth: CGFloat = AppConfig.sideHeaderWidth
+    // Covers the reload plus the theme-color stabilization debounce in findThemeColor; acts as a
+    // fallback in case the confirmation message from the page never arrives.
+    private static let darkModeUpdateTimeout: TimeInterval = 5
     private static func defaultBackgroundColor(isDarkMode: Bool) -> Color {
         isDarkMode ? Color(hex: "#17202A") : Color(hex: "#FFFFFF")
     }
@@ -127,7 +132,8 @@ struct ContentView: View {
             WebView(
                 isLoading: $isLoading, url: $homeUrl, alertMessage: $alertMessage,
                 messageFromWebView: $webViewMessage,
-                scriptExecutionRequest: $scriptExecutionRequest,
+                scriptExecutionRequest: scriptExecutionRequest,
+                scriptExecutionToken: scriptExecutionToken,
                 refreshSwitch: refreshSwitch,
                 configuration: WebViewConfigurations.makeConfiguration(
                     onLoadScripts: baseConfiguration + [.clickForYouTab])
@@ -136,7 +142,8 @@ struct ContentView: View {
             WebView(
                 isLoading: $isLoading, url: $homeUrl, alertMessage: $alertMessage,
                 messageFromWebView: $webViewMessage,
-                scriptExecutionRequest: $scriptExecutionRequest,
+                scriptExecutionRequest: scriptExecutionRequest,
+                scriptExecutionToken: scriptExecutionToken,
                 refreshSwitch: refreshSwitch,
                 configuration: WebViewConfigurations.makeConfiguration(
                     onLoadScripts: baseConfiguration + [.clickFollowingTab])
@@ -146,7 +153,8 @@ struct ContentView: View {
                 isLoading: $isLoading, url: $notificationsUrl,
                 alertMessage: $alertMessage,
                 messageFromWebView: $webViewMessage,
-                scriptExecutionRequest: $scriptExecutionRequest,
+                scriptExecutionRequest: scriptExecutionRequest,
+                scriptExecutionToken: scriptExecutionToken,
                 refreshSwitch: refreshSwitch,
                 configuration: WebViewConfigurations.makeConfiguration(
                     onLoadScripts: baseConfiguration)
@@ -156,8 +164,8 @@ struct ContentView: View {
                 WebView(
                     isLoading: $isLoading, url: url, alertMessage: $alertMessage,
                     messageFromWebView: $webViewMessage,
-                    scriptExecutionRequest: column.isXColumn
-                        ? $scriptExecutionRequest : .constant(nil),
+                    scriptExecutionRequest: column.isXColumn ? scriptExecutionRequest : nil,
+                    scriptExecutionToken: column.isXColumn ? scriptExecutionToken : 0,
                     refreshSwitch: refreshSwitch,
                     configuration: WebViewConfigurations.makeConfiguration(
                         onLoadScripts: baseConfiguration)
@@ -168,7 +176,8 @@ struct ContentView: View {
                 WebView(
                     isLoading: $isLoading, url: .constant(url), alertMessage: $alertMessage,
                     messageFromWebView: $webViewMessage,
-                    scriptExecutionRequest: $scriptExecutionRequest,
+                    scriptExecutionRequest: scriptExecutionRequest,
+                    scriptExecutionToken: scriptExecutionToken,
                     refreshSwitch: refreshSwitch,
                     configuration: WebViewConfigurations.makeConfiguration(
                         onLoadScripts: baseConfiguration)
@@ -325,15 +334,25 @@ struct ContentView: View {
                                             UpdateButton()
                                         }
                                         AppearanceToggle(isOn: $isDarkMode) { }
+                                            .disabled(isDarkModeUpdating)
                                             .onChange(of: isDarkMode) { newValue in
                                                 scriptExecutionRequest = Self.setNightModeCookieScript(isDarkMode: isDarkMode)
+                                                scriptExecutionToken += 1
                                                 backgroundColor = Self.defaultBackgroundColor(isDarkMode: isDarkMode)
+                                                isDarkModeUpdating = true
+                                                let requestToken = scriptExecutionToken
+                                                DispatchQueue.main.asyncAfter(deadline: .now() + Self.darkModeUpdateTimeout) {
+                                                    if scriptExecutionToken == requestToken {
+                                                        isDarkModeUpdating = false
+                                                    }
+                                                }
                                             }
                                         HideAdsToggle(isOn: $hideAds) { Text("Hide Ads") }
                                             .onChange(of: hideAds) { newValue in
                                                 scriptExecutionRequest = newValue
                                                     ? WebViewConfigurations.hideAds
                                                     : WebViewConfigurations.showAds
+                                                scriptExecutionToken += 1
                                             }
                                         Button {
                                             openURL(URL(string: "https://github.com/sponsors/morishin?frequency=one-time")!)
@@ -436,6 +455,7 @@ struct ContentView: View {
                                 let color = Color(hex: message.body)
                                 backgroundColor = color
                                 isDarkMode = color != Color.white
+                                isDarkModeUpdating = false
                             case .mediaOverlay:
                                 if message.body == "close" {
                                     expandedColumnIndex = nil
