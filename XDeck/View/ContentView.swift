@@ -221,6 +221,12 @@ struct ContentView: View {
                         .keyboardShortcut("-")
                         .opacity(0)
 
+                        Button(".") {
+                            pageZoom = 1
+                        }
+                        .keyboardShortcut(".")
+                        .opacity(0)
+
                         Button("r") {
                             refreshSwitch.toggle()
                         }
@@ -351,6 +357,8 @@ struct ContentView: View {
                                         Text("⌘+ Zoom In")
                                             .foregroundColor(Self.textColor(for: backgroundColor))
                                         Text("⌘- Zoom out")
+                                            .foregroundColor(Self.textColor(for: backgroundColor))
+                                        Text("⌘. Reset Zoom")
                                             .foregroundColor(Self.textColor(for: backgroundColor))
                                         Text("⌘R Refresh")
                                             .foregroundColor(Self.textColor(for: backgroundColor))
