@@ -1,0 +1,97 @@
+name: Release
+
+# Pushing a version tag (e.g. "3.1") triggers a release build; after notarization
+# the artifact is attached to GitHub Releases. Tag format must stay "MAJOR.MINOR"
+# with no "v" prefix — it's referenced as-is by the Homebrew Cask formula
+# (releases/download/#{version}/XDeck-#{version}.zip) and by the in-app update
+# check (UpdateButton.swift), which parses /tag/([0-9]+\.[0-9]+) from the tag URL.
+on:
+  push:
+    tags:
+      - "[0-9]+.[0-9]+"
+
+permissions:
+  contents: write # required to create a release with the default GITHUB_TOKEN
+
+jobs:
+  release:
+    runs-on: macos-15
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Show Xcode version
+        run: xcodebuild -version
+
+      # Import the Developer ID Application certificate (.p12) into a temporary keychain.
+      - name: Import signing certificate
+        env:
+          BUILD_CERTIFICATE_BASE64: ${{ secrets.BUILD_CERTIFICATE_BASE64 }}
+          P12_PASSWORD: ${{ secrets.P12_PASSWORD }}
+          KEYCHAIN_PASSWORD: ${{ secrets.KEYCHAIN_PASSWORD }}
+        run: |
+          CERT_PATH="$RUNNER_TEMP/cert.p12"
+          KEYCHAIN_PATH="$RUNNER_TEMP/app-signing.keychain-db"
+          echo -n "$BUILD_CERTIFICATE_BASE64" | base64 --decode -o "$CERT_PATH"
+          security create-keychain -p "$KEYCHAIN_PASSWORD" "$KEYCHAIN_PATH"
+          security set-keychain-settings -lut 21600 "$KEYCHAIN_PATH"
+          security unlock-keychain -p "$KEYCHAIN_PASSWORD" "$KEYCHAIN_PATH"
+          security import "$CERT_PATH" -P "$P12_PASSWORD" -A -t cert -f pkcs12 -k "$KEYCHAIN_PATH"
+          security set-key-partition-list -S apple-tool:,apple:,codesign: -s -k "$KEYCHAIN_PASSWORD" "$KEYCHAIN_PATH"
+          security list-keychain -d user -s "$KEYCHAIN_PATH" login.keychain
+
+      # Set the app version to match the tag so the in-app update check
+      # (CFBundleShortVersionString) and the Homebrew Cask formula stay in sync.
+      - name: Archive
+        run: |
+          VERSION="$GITHUB_REF_NAME"
+          xcodebuild archive \
+            -project XDeck.xcodeproj \
+            -scheme XDeck \
+            -configuration Release \
+            -archivePath "$RUNNER_TEMP/XDeck.xcarchive" \
+            -destination "generic/platform=macOS" \
+            MARKETING_VERSION="$VERSION" \
+            CURRENT_PROJECT_VERSION="$GITHUB_RUN_NUMBER" \
+            CODE_SIGN_STYLE=Manual \
+            CODE_SIGN_IDENTITY="Developer ID Application" \
+            DEVELOPMENT_TEAM=4GERXBURZN \
+            OTHER_CODE_SIGN_FLAGS="--timestamp"
+
+      - name: Export
+        run: |
+          xcodebuild -exportArchive \
+            -archivePath "$RUNNER_TEMP/XDeck.xcarchive" \
+            -exportPath "$RUNNER_TEMP/export" \
+            -exportOptionsPlist ExportOptions.plist
+
+      - name: Notarize & staple
+        env:
+          APPLE_ID: ${{ secrets.APPLE_ID }}
+          APPLE_APP_PASSWORD: ${{ secrets.APPLE_APP_PASSWORD }}
+          APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
+        run: |
+          VERSION="$GITHUB_REF_NAME"
+          APP="$RUNNER_TEMP/export/XDeck.app"
+          ZIP="$RUNNER_TEMP/notarize.zip"
+          # Zip the app before submitting for notarization.
+          ditto -c -k --keepParent "$APP" "$ZIP"
+          xcrun notarytool submit "$ZIP" \
+            --apple-id "$APPLE_ID" \
+            --password "$APPLE_APP_PASSWORD" \
+            --team-id "$APPLE_TEAM_ID" \
+            --wait
+          # Staple the notarization ticket to the .app and repack for distribution.
+          xcrun stapler staple "$APP"
+          ditto -c -k --keepParent "$APP" "$RUNNER_TEMP/XDeck-$VERSION.zip"
+
+      - name: Create GitHub Release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          VERSION="$GITHUB_REF_NAME"
+          gh release create "$GITHUB_REF_NAME" \
+            "$RUNNER_TEMP/XDeck-$VERSION.zip" \
+            --title "$GITHUB_REF_NAME" \
+            --generate-notes
