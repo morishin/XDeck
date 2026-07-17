@@ -15,14 +15,21 @@ permissions:
 
 jobs:
   release:
-    runs-on: macos-15
+    runs-on: macos-26
 
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Show Xcode version
-        run: xcodebuild -version
+      # XDeck/XDeck.icon uses the Icon Composer format introduced in Xcode 26;
+      # older Xcode versions copy it as a plain resource instead of compiling
+      # it into the app icon, so Xcode 26 is required here.
+      - name: Select Xcode 26
+        run: |
+          if [ -d "/Applications/Xcode_26.app" ]; then
+            sudo xcode-select -s /Applications/Xcode_26.app/Contents/Developer
+          fi
+          xcodebuild -version
 
       # Import the Developer ID Application certificate (.p12) into a temporary keychain.
       - name: Import signing certificate
