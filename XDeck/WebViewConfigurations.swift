@@ -192,7 +192,8 @@ struct WebViewConfigurations {
         function hideAds() {
           const cells = document.querySelectorAll('div[data-testid="cellInnerDiv"]');
           cells.forEach((cell) => {
-            if (cell.querySelector('div[data-testid="placementTracking"]')) {
+            // Ads carry *-impression-pixel elements; placementTracking alone also wraps regular video tweets
+            if (cell.querySelector('[data-testid$="-impression-pixel"]')) {
               cell.style.display = "none";
             }
           });
@@ -225,7 +226,7 @@ struct WebViewConfigurations {
 
           const cells = document.querySelectorAll('div[data-testid="cellInnerDiv"]');
           cells.forEach((cell) => {
-            if (cell.querySelector('div[data-testid="placementTracking"]')) {
+            if (cell.querySelector('[data-testid$="-impression-pixel"]')) {
               cell.style.display = "flex";
             }
           });
