@@ -54,13 +54,17 @@
   }
   </script>
 
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,700;1,9..144,400&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" onload="this.onload=null;this.rel='stylesheet'">
+  <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,700;1,9..144,400&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap"></noscript>
   <link rel="stylesheet" href="assets/style.css">
 </head>
 <body>
 
 <header class="site-header">
   <a href="/" class="site-logo">
-    <img src="assets/icon.png" alt="">
+    <img src="assets/icon.webp" width="30" height="30" alt="">
     <span>XDeck</span>
   </a>
   <div class="header-right">
@@ -115,7 +119,7 @@ function copyBrew(btn) {
 <section class="showcase rise rise-5">
   <div class="showcase-frame">
     <div class="showcase-scroll">
-    <img src="assets/screenshot.jpg" width="1920" height="1050" alt="XDeck running on macOS with multiple 𝕏 columns side by side">
+    <img src="assets/screenshot.webp" width="1920" height="1050" fetchpriority="high" alt="XDeck running on macOS with multiple 𝕏 columns side by side">
     </div>
   </div>
 </section>
