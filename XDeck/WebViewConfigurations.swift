@@ -78,6 +78,15 @@ struct WebViewConfigurations {
 
         \(getElementsByXPath)
 
+        // Like TweetDeck: clicking the date of the open post (a link to the page you're on) opens it in the browser
+        document.addEventListener('click', (event) => {
+            const link = event.isTrusted && event.target.closest?.('a[href]');
+            if (!link || link.href !== location.href || !/^\\/\\w+\\/status\\/\\d+$/.test(location.pathname)) return;
+            event.preventDefault();
+            event.stopImmediatePropagation();
+            webkit.messageHandlers.\(Self.handlerName).postMessage(JSON.stringify({ type: "openPost", body: link.href }));
+        }, true);
+
         \(waitForElement)
     """
 

@@ -8,5 +8,6 @@ struct WebViewMessage: Decodable {
         case userName
         case themeColor
         case mediaOverlay
+        case openPost
     }
 }

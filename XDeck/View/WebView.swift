@@ -111,6 +111,13 @@ class Coordinator: NSObject, WKNavigationDelegate, WKUIDelegate, WKScriptMessage
     // MARK: WKScriptMessageHandler
     func userContentController(_ userContentController: WKUserContentController, didReceive message: WKScriptMessage) {
         guard message.name == WebViewConfigurations.handlerName else { return }
+        if let text = message.body as? String,
+           let post = try? JSONDecoder().decode(WebViewMessage.self, from: Data(text.utf8)), post.type == .openPost {
+            if let url = URL(string: post.body), url.scheme == "https", url.host == "x.com" {
+                NSWorkspace.shared.open(url)
+            }
+            return
+        }
         print("[WKScriptMessage] \(message.body)")
         owner.messageFromWebView = message.body as? String
     }

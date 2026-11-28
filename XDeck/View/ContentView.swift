@@ -437,6 +437,8 @@ struct ContentView: View {
                                 let color = Color(hex: message.body)
                                 backgroundColor = color
                                 isDarkMode = color != Color.white
+                            case .openPost:
+                                break
                             case .mediaOverlay:
                                 break
                             }
@@ -456,6 +458,8 @@ struct ContentView: View {
                                 backgroundColor = color
                                 isDarkMode = color != Color.white
                                 isDarkModeUpdating = false
+                            case .openPost:
+                                break
                             case .mediaOverlay:
                                 if message.body == "close" {
                                     expandedColumnIndex = nil
