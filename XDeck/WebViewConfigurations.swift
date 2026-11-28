@@ -38,6 +38,7 @@ struct WebViewConfigurations {
     }
 
     static let handlerName = "handler";
+    private static let videoAutoplay = AppConfig.loadConfig()?.videoAutoplay ?? true
 
     static func makeConfiguration(onLoadScripts: [OnLoadScript]) -> WKWebViewConfiguration {
         let script = [
@@ -45,6 +46,9 @@ struct WebViewConfigurations {
             wrapOnLoad(contents: onLoadScripts.filter({ $0.runAfterLoad }).map(\.scriptContent)),
         ].joined(separator: "\n")
         let configuration = WKWebViewConfiguration()
+        if !videoAutoplay {
+            configuration.mediaTypesRequiringUserActionForPlayback = .all
+        }
         let userContentController = WKUserContentController()
         configuration.userContentController = userContentController
         let userScript = WKUserScript(

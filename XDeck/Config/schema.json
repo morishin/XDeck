@@ -8,6 +8,9 @@
     "columnWidth": {
       "type": "integer"
     },
+    "videoAutoplay": {
+      "type": "boolean"
+    },
     "columns": {
       "type": "array",
       "items": {

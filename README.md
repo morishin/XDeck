@@ -48,3 +48,5 @@ Example
   ]
 }
 ```
+
+Optional: `"videoAutoplay": false` stops videos from playing automatically (restart XDeck to apply). When the key is missing, they autoplay as before.
