@@ -11,6 +11,7 @@ struct AppConfig: Decodable {
     static let defaultWindowHeight: CGFloat = 900
 
     var columnWidth: Int?
+    var videoAutoplay: Bool?
     var columns: [Column]
 
     struct Column: Decodable {
